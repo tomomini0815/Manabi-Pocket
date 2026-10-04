@@ -10,33 +10,141 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ChallengeRouteImport } from './routes/challenge'
+import { Route as LearnRouteImport } from './routes/learn'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as ReviewRouteImport } from './routes/review'
+import { Route as RewardsRouteImport } from './routes/rewards'
+import { Route as ThinkRouteImport } from './routes/think'
+import { Route as ParentGateRouteImport } from './routes/parent.gate'
+import { Route as DrillLevelIdStepIdRouteImport } from './routes/drill.$levelId.$stepId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ChallengeRoute = ChallengeRouteImport.update({
+  id: '/challenge',
+  path: '/challenge',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearnRoute = LearnRouteImport.update({
+  id: '/learn',
+  path: '/learn',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewRoute = ReviewRouteImport.update({
+  id: '/review',
+  path: '/review',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RewardsRoute = RewardsRouteImport.update({
+  id: '/rewards',
+  path: '/rewards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ThinkRoute = ThinkRouteImport.update({
+  id: '/think',
+  path: '/think',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ParentGateRoute = ParentGateRouteImport.update({
+  id: '/parent/gate',
+  path: '/parent/gate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DrillLevelIdStepIdRoute = DrillLevelIdStepIdRouteImport.update({
+  id: '/drill/$levelId/$stepId',
+  path: '/drill/$levelId/$stepId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/challenge': typeof ChallengeRoute
+  '/learn': typeof LearnRoute
+  '/onboarding': typeof OnboardingRoute
+  '/review': typeof ReviewRoute
+  '/rewards': typeof RewardsRoute
+  '/think': typeof ThinkRoute
+  '/parent/gate': typeof ParentGateRoute
+  '/drill/$levelId/$stepId': typeof DrillLevelIdStepIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/challenge': typeof ChallengeRoute
+  '/learn': typeof LearnRoute
+  '/onboarding': typeof OnboardingRoute
+  '/review': typeof ReviewRoute
+  '/rewards': typeof RewardsRoute
+  '/think': typeof ThinkRoute
+  '/parent/gate': typeof ParentGateRoute
+  '/drill/$levelId/$stepId': typeof DrillLevelIdStepIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/challenge': typeof ChallengeRoute
+  '/learn': typeof LearnRoute
+  '/onboarding': typeof OnboardingRoute
+  '/review': typeof ReviewRoute
+  '/rewards': typeof RewardsRoute
+  '/think': typeof ThinkRoute
+  '/parent/gate': typeof ParentGateRoute
+  '/drill/$levelId/$stepId': typeof DrillLevelIdStepIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/challenge'
+    | '/learn'
+    | '/onboarding'
+    | '/review'
+    | '/rewards'
+    | '/think'
+    | '/parent/gate'
+    | '/drill/$levelId/$stepId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/challenge'
+    | '/learn'
+    | '/onboarding'
+    | '/review'
+    | '/rewards'
+    | '/think'
+    | '/parent/gate'
+    | '/drill/$levelId/$stepId'
+  id:
+    | '__root__'
+    | '/'
+    | '/challenge'
+    | '/learn'
+    | '/onboarding'
+    | '/review'
+    | '/rewards'
+    | '/think'
+    | '/parent/gate'
+    | '/drill/$levelId/$stepId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ChallengeRoute: typeof ChallengeRoute
+  LearnRoute: typeof LearnRoute
+  OnboardingRoute: typeof OnboardingRoute
+  ReviewRoute: typeof ReviewRoute
+  RewardsRoute: typeof RewardsRoute
+  ThinkRoute: typeof ThinkRoute
+  ParentGateRoute: typeof ParentGateRoute
+  DrillLevelIdStepIdRoute: typeof DrillLevelIdStepIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +156,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/challenge': {
+      id: '/challenge'
+      path: '/challenge'
+      fullPath: '/challenge'
+      preLoaderRoute: typeof ChallengeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learn': {
+      id: '/learn'
+      path: '/learn'
+      fullPath: '/learn'
+      preLoaderRoute: typeof LearnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/review': {
+      id: '/review'
+      path: '/review'
+      fullPath: '/review'
+      preLoaderRoute: typeof ReviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rewards': {
+      id: '/rewards'
+      path: '/rewards'
+      fullPath: '/rewards'
+      preLoaderRoute: typeof RewardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/think': {
+      id: '/think'
+      path: '/think'
+      fullPath: '/think'
+      preLoaderRoute: typeof ThinkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/parent/gate': {
+      id: '/parent/gate'
+      path: '/parent/gate'
+      fullPath: '/parent/gate'
+      preLoaderRoute: typeof ParentGateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/drill/$levelId/$stepId': {
+      id: '/drill/$levelId/$stepId'
+      path: '/drill/$levelId/$stepId'
+      fullPath: '/drill/$levelId/$stepId'
+      preLoaderRoute: typeof DrillLevelIdStepIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ChallengeRoute: ChallengeRoute,
+  LearnRoute: LearnRoute,
+  OnboardingRoute: OnboardingRoute,
+  ReviewRoute: ReviewRoute,
+  RewardsRoute: RewardsRoute,
+  ThinkRoute: ThinkRoute,
+  ParentGateRoute: ParentGateRoute,
+  DrillLevelIdStepIdRoute: DrillLevelIdStepIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
