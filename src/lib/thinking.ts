@@ -29,7 +29,7 @@ function validate(p: Partial<ThinkProblem>): p is ThinkProblem {
   return ok;
 }
 
-export const BANK: ThinkProblem[] = (bank.problems as Partial<ThinkProblem>[]).filter(validate);
+export const BANK: ThinkProblem[] = (bank.problems as unknown as Partial<ThinkProblem>[]).filter(validate);
 
 /** Parametric thinking problems (numbers vary by seed). */
 export function paramProblem(seed: number): ThinkProblem {

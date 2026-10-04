@@ -16,7 +16,10 @@ import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as ReviewRouteImport } from './routes/review'
 import { Route as RewardsRouteImport } from './routes/rewards'
 import { Route as ThinkRouteImport } from './routes/think'
+import { Route as ParentIndexRouteImport } from './routes/parent.index'
 import { Route as ParentGateRouteImport } from './routes/parent.gate'
+import { Route as ParentPaperRouteImport } from './routes/parent.paper'
+import { Route as ParentSettingsRouteImport } from './routes/parent.settings'
 import { Route as DrillLevelIdStepIdRouteImport } from './routes/drill.$levelId.$stepId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -54,9 +57,24 @@ const ThinkRoute = ThinkRouteImport.update({
   path: '/think',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ParentIndexRoute = ParentIndexRouteImport.update({
+  id: '/parent/',
+  path: '/parent/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ParentGateRoute = ParentGateRouteImport.update({
   id: '/parent/gate',
   path: '/parent/gate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ParentPaperRoute = ParentPaperRouteImport.update({
+  id: '/parent/paper',
+  path: '/parent/paper',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ParentSettingsRoute = ParentSettingsRouteImport.update({
+  id: '/parent/settings',
+  path: '/parent/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DrillLevelIdStepIdRoute = DrillLevelIdStepIdRouteImport.update({
@@ -74,6 +92,9 @@ export interface FileRoutesByFullPath {
   '/rewards': typeof RewardsRoute
   '/think': typeof ThinkRoute
   '/parent/gate': typeof ParentGateRoute
+  '/parent/paper': typeof ParentPaperRoute
+  '/parent/settings': typeof ParentSettingsRoute
+  '/parent/': typeof ParentIndexRoute
   '/drill/$levelId/$stepId': typeof DrillLevelIdStepIdRoute
 }
 export interface FileRoutesByTo {
@@ -85,6 +106,9 @@ export interface FileRoutesByTo {
   '/rewards': typeof RewardsRoute
   '/think': typeof ThinkRoute
   '/parent/gate': typeof ParentGateRoute
+  '/parent/paper': typeof ParentPaperRoute
+  '/parent/settings': typeof ParentSettingsRoute
+  '/parent': typeof ParentIndexRoute
   '/drill/$levelId/$stepId': typeof DrillLevelIdStepIdRoute
 }
 export interface FileRoutesById {
@@ -97,6 +121,9 @@ export interface FileRoutesById {
   '/rewards': typeof RewardsRoute
   '/think': typeof ThinkRoute
   '/parent/gate': typeof ParentGateRoute
+  '/parent/paper': typeof ParentPaperRoute
+  '/parent/settings': typeof ParentSettingsRoute
+  '/parent/': typeof ParentIndexRoute
   '/drill/$levelId/$stepId': typeof DrillLevelIdStepIdRoute
 }
 export interface FileRouteTypes {
@@ -110,6 +137,9 @@ export interface FileRouteTypes {
     | '/rewards'
     | '/think'
     | '/parent/gate'
+    | '/parent/paper'
+    | '/parent/settings'
+    | '/parent/'
     | '/drill/$levelId/$stepId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -121,6 +151,9 @@ export interface FileRouteTypes {
     | '/rewards'
     | '/think'
     | '/parent/gate'
+    | '/parent/paper'
+    | '/parent/settings'
+    | '/parent'
     | '/drill/$levelId/$stepId'
   id:
     | '__root__'
@@ -132,6 +165,9 @@ export interface FileRouteTypes {
     | '/rewards'
     | '/think'
     | '/parent/gate'
+    | '/parent/paper'
+    | '/parent/settings'
+    | '/parent/'
     | '/drill/$levelId/$stepId'
   fileRoutesById: FileRoutesById
 }
@@ -144,6 +180,9 @@ export interface RootRouteChildren {
   RewardsRoute: typeof RewardsRoute
   ThinkRoute: typeof ThinkRoute
   ParentGateRoute: typeof ParentGateRoute
+  ParentPaperRoute: typeof ParentPaperRoute
+  ParentSettingsRoute: typeof ParentSettingsRoute
+  ParentIndexRoute: typeof ParentIndexRoute
   DrillLevelIdStepIdRoute: typeof DrillLevelIdStepIdRoute
 }
 
@@ -198,11 +237,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ThinkRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/parent/': {
+      id: '/parent/'
+      path: '/parent'
+      fullPath: '/parent/'
+      preLoaderRoute: typeof ParentIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/parent/gate': {
       id: '/parent/gate'
       path: '/parent/gate'
       fullPath: '/parent/gate'
       preLoaderRoute: typeof ParentGateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/parent/paper': {
+      id: '/parent/paper'
+      path: '/parent/paper'
+      fullPath: '/parent/paper'
+      preLoaderRoute: typeof ParentPaperRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/parent/settings': {
+      id: '/parent/settings'
+      path: '/parent/settings'
+      fullPath: '/parent/settings'
+      preLoaderRoute: typeof ParentSettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/drill/$levelId/$stepId': {
@@ -224,6 +284,9 @@ const rootRouteChildren: RootRouteChildren = {
   RewardsRoute: RewardsRoute,
   ThinkRoute: ThinkRoute,
   ParentGateRoute: ParentGateRoute,
+  ParentPaperRoute: ParentPaperRoute,
+  ParentSettingsRoute: ParentSettingsRoute,
+  ParentIndexRoute: ParentIndexRoute,
   DrillLevelIdStepIdRoute: DrillLevelIdStepIdRoute,
 }
 export const routeTree = rootRouteImport
