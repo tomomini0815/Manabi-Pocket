@@ -48,7 +48,8 @@ const numArr = (p: Params, k: string, d: number[]) =>
 
 const DOTS = ["🍎", "🍓", "🐟", "⭐", "🌸", "🚗"];
 
-type Gen = (p: Params, r: Rand, delta: number) => Omit<Problem, "seed">;
+type GenOut = { prompt: string; visual?: string | undefined; passage?: string; answer: string; input: InputKind; choices?: string[]; hints: [string, string, string] };
+type Gen = (p: Params, r: Rand, delta: number) => GenOut;
 
 const gens: Record<string, Gen> = {
   count(p, r, d) {
@@ -78,7 +79,7 @@ const gens: Record<string, Gen> = {
     const s = a + b;
     return {
       prompt: `${a} + ${b} = ?`,
-      visual: s <= 10 ? `${"🍎".repeat(a)} ＋ ${"🍎".repeat(b)}` : undefined as unknown as string,
+      visual: s <= 10 ? `${"🍎".repeat(a)} ＋ ${"🍎".repeat(b)}` : undefined,
       answer: String(s),
       input: "keypad",
       hints: [
@@ -103,7 +104,7 @@ const gens: Record<string, Gen> = {
     }
     return {
       prompt: `${a} − ${b} = ?`,
-      visual: a <= 10 ? "🍓".repeat(a) : undefined as unknown as string,
+      visual: a <= 10 ? "🍓".repeat(a) : undefined,
       answer: String(a - b),
       input: "keypad",
       hints: [
