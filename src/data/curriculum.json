@@ -1,0 +1,84 @@
+{
+  "subjects": [
+    {
+      "id": "math",
+      "name": "さんすう",
+      "icon": "🔢",
+      "levels": [
+        { "id": "math-count", "name": "かずの にんしき", "startGrade": 0, "steps": [
+          { "id": "s01", "title": "1〜5を かぞえる", "generator": "count", "params": { "min": 1, "max": 5 }, "targetSec": 120 },
+          { "id": "s02", "title": "1〜10を かぞえる", "generator": "count", "params": { "min": 3, "max": 10 }, "targetSec": 150 }
+        ]},
+        { "id": "math-add-1", "name": "たしざん 1", "startGrade": 1, "steps": [
+          { "id": "s01", "title": "1+1〜5+5", "generator": "add", "params": { "min": 1, "max": 5, "carry": false }, "targetSec": 120 },
+          { "id": "s02", "title": "こたえが10まで", "generator": "add", "params": { "min": 1, "max": 9, "carry": false, "sumMax": 10 }, "targetSec": 120 },
+          { "id": "s03", "title": "くりあがり", "generator": "add", "params": { "min": 2, "max": 9, "carry": true }, "targetSec": 150 }
+        ]},
+        { "id": "math-sub-1", "name": "ひきざん 1", "startGrade": 2, "steps": [
+          { "id": "s01", "title": "10までの ひきざん", "generator": "sub", "params": { "min": 1, "max": 10, "borrow": false }, "targetSec": 120 },
+          { "id": "s02", "title": "くりさがり", "generator": "sub", "params": { "min": 11, "max": 18, "borrow": true }, "targetSec": 150 }
+        ]},
+        { "id": "math-add-2", "name": "2けたの たしざん・ひきざん", "startGrade": 3, "steps": [
+          { "id": "s01", "title": "2けた+1けた", "generator": "add", "params": { "min": 10, "max": 89, "bMax": 9, "carry": true }, "targetSec": 180 },
+          { "id": "s02", "title": "2けた+2けた", "generator": "add", "params": { "min": 10, "max": 49, "carry": true }, "targetSec": 210 },
+          { "id": "s03", "title": "2けた-2けた", "generator": "sub", "params": { "min": 20, "max": 99, "borrow": true, "twoDigit": true }, "targetSec": 210 }
+        ]},
+        { "id": "math-mul", "name": "かけざん（九九）", "startGrade": 4, "steps": [
+          { "id": "s01", "title": "2・5のだん", "generator": "mul", "params": { "tables": [2, 5] }, "targetSec": 120 },
+          { "id": "s02", "title": "3・4のだん", "generator": "mul", "params": { "tables": [3, 4] }, "targetSec": 120 },
+          { "id": "s03", "title": "6・7のだん", "generator": "mul", "params": { "tables": [6, 7] }, "targetSec": 150 },
+          { "id": "s04", "title": "8・9のだん", "generator": "mul", "params": { "tables": [8, 9] }, "targetSec": 150 }
+        ]},
+        { "id": "math-div", "name": "わりざん", "startGrade": 5, "steps": [
+          { "id": "s01", "title": "九九で わる", "generator": "div", "params": { "tables": [2, 3, 4, 5] }, "targetSec": 150 },
+          { "id": "s02", "title": "いろいろな わりざん", "generator": "div", "params": { "tables": [6, 7, 8, 9] }, "targetSec": 180 }
+        ]},
+        { "id": "math-frac", "name": "分数・小数", "startGrade": 6, "steps": [
+          { "id": "s01", "title": "同じ分母の たし算", "generator": "frac", "params": { "dens": [3, 4, 5, 6, 8] }, "targetSec": 180 },
+          { "id": "s02", "title": "小数の たし算", "generator": "decimal", "params": { "max": 9 }, "targetSec": 180 }
+        ]}
+      ]
+    },
+    {
+      "id": "japanese",
+      "name": "こくご",
+      "icon": "あ",
+      "levels": [
+        { "id": "ja-hira", "name": "ひらがな", "startGrade": 0, "steps": [
+          { "id": "s01", "title": "さいしょの もじ", "generator": "kanaFirst", "params": {}, "targetSec": 150 },
+          { "id": "s02", "title": "かいてみよう", "generator": "write", "params": { "set": "hira" }, "targetSec": 300 }
+        ]},
+        { "id": "ja-kata", "name": "カタカナ", "startGrade": 2, "steps": [
+          { "id": "s01", "title": "ひらがな→カタカナ", "generator": "katakana", "params": {}, "targetSec": 150 },
+          { "id": "s02", "title": "カタカナを かこう", "generator": "write", "params": { "set": "kata" }, "targetSec": 300 }
+        ]},
+        { "id": "ja-vocab", "name": "ことば", "startGrade": 2, "steps": [
+          { "id": "s01", "title": "はんたいの ことば", "generator": "opposite", "params": {}, "targetSec": 150 }
+        ]},
+        { "id": "ja-kanji", "name": "かんじの よみ", "startGrade": 3, "steps": [
+          { "id": "s01", "title": "1年の かんじ", "generator": "kanji", "params": { "set": 1 }, "targetSec": 150 },
+          { "id": "s02", "title": "2年の かんじ", "generator": "kanji", "params": { "set": 2 }, "targetSec": 150 }
+        ]},
+        { "id": "ja-read", "name": "みじかい ぶんしょう", "startGrade": 3, "steps": [
+          { "id": "s01", "title": "よんで こたえよう", "generator": "reading", "params": {}, "targetSec": 300 }
+        ]}
+      ]
+    },
+    {
+      "id": "english",
+      "name": "えいご",
+      "icon": "Aa",
+      "levels": [
+        { "id": "en-abc", "name": "アルファベット", "startGrade": 1, "steps": [
+          { "id": "s01", "title": "大文字と小文字", "generator": "alphaCase", "params": {}, "targetSec": 120 }
+        ]},
+        { "id": "en-word", "name": "たんご", "startGrade": 2, "steps": [
+          { "id": "s01", "title": "どうぶつ・たべもの", "generator": "engWord", "params": {}, "targetSec": 150 }
+        ]},
+        { "id": "en-sentence", "name": "かんたんな ぶん", "startGrade": 4, "steps": [
+          { "id": "s01", "title": "I like / I have", "generator": "engSentence", "params": {}, "targetSec": 180 }
+        ]}
+      ]
+    }
+  ]
+}
