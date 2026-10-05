@@ -5,6 +5,7 @@ import { DrawCanvas } from "./DrawCanvas";
 import { Confetti } from "./Confetti";
 import { Pocket } from "./Pocket";
 import { MathFormula } from "./MathFormula";
+import { RubyText } from "./Kana";
 import { playTone } from "@/lib/sound";
 import type { Problem } from "@/lib/generators";
 
@@ -105,10 +106,10 @@ export function DrillSession({ title, color, total, targetSec, stage, makeProble
   const dots = useMemo(() => Array.from({ length: total }), [total]);
 
   return (
-    <div className="min-h-dvh md:h-dvh md:max-h-dvh w-full bg-[#f5efe6] text-foreground flex flex-col justify-start px-3 pt-2 pb-3.5 sm:px-6 sm:pt-3.5 sm:pb-5 select-none overflow-y-auto md:overflow-hidden">
+    <div className="min-h-dvh md:h-dvh md:max-h-dvh w-full bg-[#f5efe6] text-foreground flex flex-col justify-start px-3 pt-1.5 pb-3.5 sm:px-6 sm:pt-2 sm:pb-5 select-none overflow-y-auto md:overflow-hidden">
       {state === "correct" && <Confetti />}
 
-      <div className="mx-auto w-full max-w-3xl flex flex-col gap-2 sm:gap-2.5 my-auto">
+      <div className="mx-auto w-full max-w-3xl flex flex-col gap-2 sm:gap-2.5 mt-0.5 sm:mt-1 mb-auto">
         {/* トップヘッダー（立体粘土バー ＆ ビーズプログレス） */}
         <header className="w-full shrink-0">
           <div className="flex items-center gap-2.5 sm:gap-3">
@@ -189,8 +190,10 @@ export function DrillSession({ title, color, total, targetSec, stage, makeProble
 
           {/* 長文（国語・文章題など） */}
           {problem.passage && (
-            <div className="clay-inset my-2 p-3 text-left text-base sm:text-lg leading-relaxed max-h-32 sm:max-h-40 overflow-y-auto w-full bg-[#f6eee3] shrink-0">
-              {problem.passage}
+            <div className="clay-inset my-2 sm:my-2.5 p-3.5 sm:p-5 text-left w-full bg-[#faf4eb] border border-[#e8ded0]/80 rounded-2xl sm:rounded-3xl max-h-44 sm:max-h-60 overflow-y-auto shrink-0 shadow-inner">
+              <p className="text-lg sm:text-xl md:text-2xl font-black text-[#222831] leading-relaxed sm:leading-loose tracking-wide select-text">
+                <RubyText text={problem.passage} />
+              </p>
             </div>
           )}
 
@@ -205,6 +208,7 @@ export function DrillSession({ title, color, total, targetSec, stage, makeProble
             <div className="w-full flex items-center justify-center">
               <MathFormula
                 text={problem.prompt}
+                noRuby={problem.noRuby}
                 className="text-2xl sm:text-3xl md:text-4xl text-foreground font-black tracking-wide leading-relaxed"
               />
             </div>
@@ -236,12 +240,12 @@ export function DrillSession({ title, color, total, targetSec, stage, makeProble
           {(state === "retry" || state === "reveal") && (
             <div className="clay-card-peach p-1.5 sm:p-2 text-xs sm:text-sm text-[#592518]">
               <p className="font-black text-xs sm:text-sm text-[#b54523]">△ おしい！ もういちど かんがえてみよう</p>
-              <p className="mt-0.5 truncate font-bold">💡 {problem.hints[hint - 1]}</p>
+              <p className="mt-0.5 truncate font-bold">💡 <RubyText text={problem.hints[hint - 1]} /></p>
             </div>
           )}
           {state === "ask" && hint > 0 && (
             <div className="clay-card p-1.5 sm:p-2 text-xs sm:text-sm text-foreground font-bold truncate">
-              💡 {problem.hints[hint - 1]}
+              💡 <RubyText text={problem.hints[hint - 1]} />
             </div>
           )}
         </div>

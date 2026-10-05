@@ -5,17 +5,14 @@ import { QueryClient } from "@tanstack/react-query";
 import { routeTree } from "./routeTree.gen";
 import "./styles.css";
 
-// GitHub Pages等のベースパスを動的に検出（/Manabi-Pocket 等）
-const basepath =
-  typeof window !== "undefined" && window.location.pathname.startsWith("/Manabi-Pocket")
-    ? "/Manabi-Pocket"
-    : undefined;
+const isPages =
+  typeof window !== "undefined" && window.location.pathname.startsWith("/Manabi-Pocket");
 
 const queryClient = new QueryClient();
 
 const router = createRouter({
   routeTree,
-  basepath,
+  ...(isPages ? { basepath: "/Manabi-Pocket" } : {}),
   context: { queryClient },
   scrollRestoration: true,
   defaultPreloadStaleTime: 0,

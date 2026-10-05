@@ -1,9 +1,10 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useLayoutEffect } from "react";
 import { Lightbulb, PenTool, ChevronDown, ChevronUp, Plus, Minus, GripHorizontal, ArrowLeft } from "lucide-react";
 import { DrawCanvas } from "./DrawCanvas";
 import { Keypad } from "./Keypad";
 import { Confetti } from "./Confetti";
 import { MathFormula } from "./MathFormula";
+import { RubyText, stripFurigana } from "./Kana";
 import { playTone } from "@/lib/sound";
 import { DIFFICULTY_LABEL, METHOD_TAGS, type ThinkProblem } from "@/lib/thinking";
 
@@ -14,7 +15,7 @@ const HINT_TITLE = ["", "ヒント1：といかけ", "ヒント2：ちゃくが�
 function Figure({ kind }: { kind: string }) {
   if (kind === "grid2") {
     return (
-      <svg width="140" height="140" viewBox="0 0 140 140" role="img" aria-label="2×2の ごばんのめ" className="max-h-[130px] sm:max-h-[150px] w-auto h-auto select-none">
+      <svg width="140" height="140" viewBox="0 0 140 140" role="img" aria-label="2×2の ごばんのめ" className="max-h-[130px] sm:max-h-[150px] lg:max-h-none w-auto h-auto select-none">
         <rect x="10" y="10" width="120" height="120" rx="6" fill="#F7FAFC" stroke="var(--think-deep)" strokeWidth="4" />
         <line x1="70" y1="10" x2="70" y2="130" stroke="var(--think-deep)" strokeWidth="4" />
         <line x1="10" y1="70" x2="130" y2="70" stroke="var(--think-deep)" strokeWidth="4" />
@@ -23,7 +24,7 @@ function Figure({ kind }: { kind: string }) {
   }
   if (kind === "balance") {
     return (
-      <svg width="270" height="135" viewBox="0 0 280 140" role="img" aria-label="てんびんとおもさ推理" className="max-h-[130px] sm:max-h-[150px] w-auto h-auto select-none">
+      <svg width="270" height="135" viewBox="0 0 280 140" role="img" aria-label="てんびんとおもさ推理" className="max-h-[130px] sm:max-h-[150px] lg:max-h-none w-auto h-auto select-none">
         <defs>
           <linearGradient id="beamGrad" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#4A5568" />
@@ -66,7 +67,7 @@ function Figure({ kind }: { kind: string }) {
   }
   if (kind === "origami") {
     return (
-      <svg width="140" height="140" viewBox="0 0 140 140" role="img" aria-label="4つ折りの紙" className="max-h-[130px] sm:max-h-[150px] w-auto h-auto select-none">
+      <svg width="140" height="140" viewBox="0 0 140 140" role="img" aria-label="4つ折りの紙" className="max-h-[130px] sm:max-h-[150px] lg:max-h-none w-auto h-auto select-none">
         <rect x="25" y="25" width="90" height="90" fill="#EBF8FF" stroke="#3182CE" strokeWidth="3" rx="4" />
         <path d="M25 50 L50 25" stroke="#E53E3E" strokeWidth="3" strokeDasharray="4 4" />
         <circle cx="25" cy="25" r="18" fill="#FED7D7" stroke="#E53E3E" strokeWidth="2" />
@@ -76,7 +77,7 @@ function Figure({ kind }: { kind: string }) {
   }
   if (kind === "tri_div3") {
     return (
-      <svg width="170" height="120" viewBox="0 0 180 120" role="img" aria-label="3つに区切られた三角形" className="max-h-[130px] sm:max-h-[150px] w-auto h-auto select-none">
+      <svg width="170" height="120" viewBox="0 0 180 120" role="img" aria-label="3つに区切られた三角形" className="max-h-[130px] sm:max-h-[150px] lg:max-h-none w-auto h-auto select-none">
         <polygon points="90,15 15,105 165,105" fill="#F7FAFC" stroke="var(--think-deep)" strokeWidth="3.5" />
         <line x1="90" y1="15" x2="65" y2="105" stroke="var(--think-deep)" strokeWidth="3" />
         <line x1="90" y1="15" x2="115" y2="105" stroke="var(--think-deep)" strokeWidth="3" />
@@ -91,7 +92,7 @@ function Figure({ kind }: { kind: string }) {
         viewBox="0 0 400 185"
         role="img"
         aria-label="サイコロの立体転がり図"
-        className="select-none max-w-full max-h-[140px] sm:max-h-[160px] md:max-h-[175px] w-auto h-auto"
+        className="select-none max-w-full max-h-[140px] sm:max-h-[160px] md:max-h-[175px] lg:max-h-none w-auto h-auto"
       >
         <defs>
           <filter id="diceShadow" x="-20%" y="-20%" width="150%" height="150%">
@@ -393,7 +394,7 @@ function Figure({ kind }: { kind: string }) {
         viewBox="0 0 350 195"
         role="img"
         aria-label="覆面算の筆算図（AB ＋ BA ＝ 77）"
-        className="select-none max-w-full max-h-[140px] sm:max-h-[160px] md:max-h-[175px] w-auto h-auto"
+        className="select-none max-w-full max-h-[140px] sm:max-h-[160px] md:max-h-[175px] lg:max-h-none w-auto h-auto"
       >
         <defs>
           <filter id="boxShadow" x="-10%" y="-10%" width="120%" height="120%">
@@ -474,7 +475,7 @@ function Figure({ kind }: { kind: string }) {
   }
   if (kind === "square_in_square") {
     return (
-      <svg width="130" height="130" viewBox="0 0 140 140" role="img" aria-label="正方形の中の正方形" className="max-h-[130px] sm:max-h-[150px] w-auto h-auto select-none">
+      <svg width="130" height="130" viewBox="0 0 140 140" role="img" aria-label="正方形の中の正方形" className="max-h-[130px] sm:max-h-[150px] lg:max-h-none w-auto h-auto select-none">
         <rect x="15" y="15" width="110" height="110" fill="#FFF5F5" stroke="#E53E3E" strokeWidth="3" rx="4" />
         <polygon points="70,15 125,70 70,125 15,70" fill="#EBF8FF" stroke="#3182CE" strokeWidth="3.5" />
         <text x="70" y="76" textAnchor="middle" fontSize="14" fontWeight="bold" fill="#2B6CB0">面積？</text>
@@ -483,7 +484,7 @@ function Figure({ kind }: { kind: string }) {
   }
   if (kind === "grid2x3") {
     return (
-      <svg width="180" height="115" viewBox="0 0 190 125" role="img" aria-label="2×3の格子の道" className="max-h-[130px] sm:max-h-[150px] w-auto h-auto select-none">
+      <svg width="180" height="115" viewBox="0 0 190 125" role="img" aria-label="2×3の格子の道" className="max-h-[130px] sm:max-h-[150px] lg:max-h-none w-auto h-auto select-none">
         <line x1="25" y1="25" x2="165" y2="25" stroke="#4A5568" strokeWidth="3.5" />
         <line x1="25" y1="65" x2="165" y2="65" stroke="#4A5568" strokeWidth="3.5" />
         <line x1="25" y1="105" x2="165" y2="105" stroke="#4A5568" strokeWidth="3.5" />
@@ -509,10 +510,26 @@ export function ThinkingSolver({ problem, onDone }: { problem: ThinkProblem; onD
   const [solved, setSolved] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const [methods, setMethods] = useState<string[]>([]);
-  const [showMemo, setShowMemo] = useState(false);
-  const [memoHeight, setMemoHeight] = useState(200);
+  const [showMemo, setShowMemo] = useState(true);
+  const [memoHeight, setMemoHeight] = useState(220);
   const rightColRef = useRef<HTMLDivElement>(null);
+  const [initialRightHeight, setInitialRightHeight] = useState<number | null>(null);
   const hintBtnContainerRef = useRef<HTMLDivElement>(null);
+
+  // PC表示時（lg以上 1024px以上）、右カラム高さを計測して左カラムの初期高さとしてボトムをぴったり揃える（元のデザイン）
+  useLayoutEffect(() => {
+    const measure = () => {
+      if (hint === 0 && rightColRef.current && window.innerWidth >= 1024) {
+        const h = rightColRef.current.offsetHeight;
+        if (h > 0) setInitialRightHeight(h);
+      } else {
+        setInitialRightHeight(null);
+      }
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [problem.id, hint]);
 
   // ヒントボタンを押した時は、ヒントボタン自体が画面内にしっかり見えるように自動スクロール
   const handleNextHint = () => {
@@ -521,7 +538,7 @@ export function ThinkingSolver({ problem, onDone }: { problem: ThinkProblem; onD
       setTimeout(() => {
         hintBtnContainerRef.current?.scrollIntoView({
           behavior: "smooth",
-          block: "end",
+          block: "nearest",
         });
       }, 100);
       return next;
@@ -575,182 +592,169 @@ export function ThinkingSolver({ problem, onDone }: { problem: ThinkProblem; onD
       {phase === "reflect" && <Confetti />}
 
       {phase === "solve" && (
-        <div className="w-full grid grid-cols-1 md:grid-cols-[1fr_310px] lg:grid-cols-[1fr_340px] xl:grid-cols-[1fr_360px] gap-3 sm:gap-4 md:gap-5 items-start">
-          {/* 左カラム：問題文 & 図形 ＆ ひらめきメモ */}
-          <div className="flex flex-col gap-3 min-w-0 w-full">
-            {/* 問題カード（超立体アイボリー粘土カード） */}
-            <section className="clay-card p-4 sm:p-5 w-full relative overflow-hidden">
-              <div className="flex flex-wrap items-center gap-2 mb-2.5 sm:mb-3">
-                <span className="clay-badge text-xs font-black bg-primary-soft text-primary-dark">
-                  {problem.typeTag}
-                </span>
-                <span className="clay-badge text-xs font-black bg-amber-100 text-amber-900 border border-amber-300/40">
-                  {DIFFICULTY_LABEL[problem.difficulty]}
-                </span>
-              </div>
+        <div className="w-full grid grid-cols-1 md:grid-cols-[1fr_310px] lg:grid-cols-[1fr_380px] gap-3.5 sm:gap-4 lg:gap-6 items-start">
+          {/* 1. 問題カード（PC時：上部全幅 lg:col-span-2 lg:row-start-1 ／ iPad時：左上 md:col-start-1 md:row-start-1） */}
+          <section className="clay-card p-4 sm:p-5 lg:p-7 w-full relative overflow-hidden order-1 md:col-start-1 md:row-start-1 lg:col-span-2 lg:row-start-1">
+            <div className="flex flex-wrap items-center gap-2 mb-2.5 sm:mb-3 lg:mb-3">
+              <span className="clay-badge text-xs font-black bg-primary-soft text-primary-dark">
+                {stripFurigana(problem.typeTag)}
+              </span>
+              <span className="clay-badge text-xs font-black bg-amber-100 text-amber-900 border border-amber-300/40">
+                {stripFurigana(DIFFICULTY_LABEL[problem.difficulty] ?? "")}
+              </span>
+            </div>
 
-              <div className="flex flex-col xl:flex-row items-stretch xl:items-start justify-between gap-3.5 sm:gap-4">
-                <div className="flex-1 text-left flex flex-col gap-2.5 min-w-0">
-                  {(() => {
-                    // 改行や「。このとき」で自然なブロックに分割
-                    const rawLines = problem.question.split("\n").flatMap((line) => {
-                      const idx = line.indexOf("このとき");
-                      if (idx > 0 && !line.startsWith("【")) {
-                        return [line.slice(0, idx).trim(), line.slice(idx).trim()];
-                      }
-                      return [line.trim()];
-                    }).filter(Boolean);
+            <div className="flex flex-col sm:flex-row lg:flex-row items-stretch sm:items-start lg:items-start justify-between gap-3.5 sm:gap-4 lg:gap-7">
+              <div className="flex-1 text-left flex flex-col gap-2.5 lg:gap-3 min-w-0">
+                {(() => {
+                  // 改行や「。このとき」で自然なブロックに分割
+                  const rawLines = problem.question.split("\n").flatMap((line) => {
+                    const idx = line.indexOf("このとき");
+                    if (idx > 0 && !line.startsWith("【")) {
+                      return [line.slice(0, idx).trim(), line.slice(idx).trim()];
+                    }
+                    return [line.trim()];
+                  }).filter(Boolean);
 
-                    return rawLines.map((trimmed, idx) => {
-                      // 【...ルール】等の前提条件カード
-                      const isRule =
-                        /^【.*?(ルール|きまり|条件).*?】/.test(trimmed) ||
-                        trimmed.includes("向かい合う面の 目の合計は 必ず「7」") ||
-                        trimmed.includes("向かい合う面の和が7");
+                  return rawLines.map((trimmed, idx) => {
+                    // 【...ルール】等の前提条件カード
+                    const isRule =
+                      /^【.*?(ルール|きまり|条件).*?】/.test(trimmed) ||
+                      trimmed.includes("向かい合う面の 目の合計は 必ず「7」") ||
+                      trimmed.includes("向かい合う面の和が7");
 
-                      if (isRule) {
-                        return (
-                          <div
-                            key={idx}
-                            className="clay-inset p-2.5 sm:p-3 rounded-2xl bg-amber-50/80 border border-amber-300/50 flex items-start gap-2 shadow-2xs"
-                          >
-                            <span className="shrink-0 clay-badge !py-0.5 !px-2 text-xs font-black bg-amber-200 text-amber-950 border border-amber-300 shadow-2xs">
-                              💡 ルール
-                            </span>
-                            <p className="text-xs sm:text-sm font-bold text-amber-950 leading-relaxed">
-                              {trimmed.replace(/^【.*?】/, "").trim()}
-                            </p>
-                          </div>
-                        );
-                      }
-
-                      // 最後の問いかけ行（「〜なに？」「〜いくつ？」など）
-                      const isQuestion =
-                        trimmed.startsWith("このとき") ||
-                        /(なに|いくつ|なん|どれ|どうなる)[\?？]$/.test(trimmed);
-
-                      if (isQuestion) {
-                        return (
-                          <div
-                            key={idx}
-                            className="mt-0.5 p-2.5 sm:p-3 rounded-2xl bg-primary-soft/50 border border-primary/20 flex items-start gap-2"
-                          >
-                            <span className="shrink-0 clay-badge !py-0.5 !px-2 text-xs font-black bg-primary text-white shadow-2xs">
-                              とい
-                            </span>
-                            <MathFormula
-                              text={trimmed}
-                              className="text-base sm:text-lg md:text-xl font-black text-foreground leading-snug"
-                            />
-                          </div>
-                        );
-                      }
-
-                      // 通常の状況・条件文
+                    if (isRule) {
                       return (
-                        <div key={idx} className="text-sm sm:text-base md:text-lg font-bold text-foreground/90 leading-relaxed px-1">
-                          <MathFormula text={trimmed} />
+                        <div
+                          key={idx}
+                          className="clay-inset p-2.5 sm:p-3 lg:p-4 rounded-2xl bg-amber-50/80 border border-amber-300/50 flex items-start gap-2.5 shadow-2xs"
+                        >
+                          <span className="shrink-0 clay-badge !py-0.5 !px-2.5 text-xs font-black bg-amber-200 text-amber-950 border border-amber-300 shadow-2xs">
+                            💡 ルール
+                          </span>
+                          <p className="text-xs sm:text-sm lg:text-base font-bold text-amber-950 leading-relaxed">
+                            {trimmed.replace(/^【.*?】/, "").trim()}
+                          </p>
                         </div>
                       );
-                    });
-                  })()}
-                </div>
+                    }
 
-                {problem.figure && (
-                  <div className="w-full xl:w-auto shrink-0 flex items-center justify-center p-2.5 sm:p-3 clay-tile-white !rounded-2xl border-2 border-white shadow-sm self-center xl:self-start max-w-[280px] md:max-w-[320px]">
-                    <Figure kind={problem.figure} />
-                  </div>
-                )}
+                    // 最後の問いかけ行（「〜なに？」「〜いくつ？」など）
+                    const isQuestion =
+                      trimmed.startsWith("このとき") ||
+                      /(なに|いくつ|なん|どれ|どうなる)[\?？]$/.test(trimmed);
+
+                    if (isQuestion) {
+                      return (
+                        <div
+                          key={idx}
+                          className="mt-0.5 lg:mt-1 p-2.5 sm:p-3 rounded-2xl bg-primary-soft/50 border border-primary/20 flex items-start gap-2.5"
+                        >
+                          <span className="shrink-0 clay-badge !py-0.5 !px-2.5 text-xs font-black bg-primary text-white shadow-2xs">
+                            とい
+                          </span>
+                          <MathFormula
+                            text={trimmed}
+                            className="text-base sm:text-lg md:text-xl lg:text-2xl font-black text-foreground leading-snug lg:leading-relaxed"
+                          />
+                        </div>
+                      );
+                    }
+
+                    // 通常の状況・条件文
+                    return (
+                      <div key={idx} className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-foreground/90 leading-relaxed px-1">
+                        <MathFormula text={trimmed} />
+                      </div>
+                    );
+                  });
+                })()}
               </div>
-            </section>
 
-            {/* ひらめきメモカード（手書きノート：折りたたみ対応でiPad画面でもスッキリ収まる） */}
-            <div className="clay-card min-w-0 w-full flex flex-col p-3 sm:p-3.5">
+              {problem.figure && (
+                <div className="w-full sm:w-auto lg:w-auto lg:min-w-[400px] shrink-0 flex items-center justify-center p-2.5 sm:p-3 lg:p-5 clay-tile-white !rounded-2xl lg:!rounded-3xl border-2 border-white shadow-sm self-center sm:self-start lg:self-start max-w-[240px] md:max-w-[260px] lg:max-w-none">
+                  <Figure kind={problem.figure} />
+                </div>
+              )}
+            </div>
+          </section>
+
+          {/* 2. ひらめきメモカード（PC時：下部左側 lg:col-start-1 lg:row-start-2 ／ iPad時：左下 md:col-start-1 md:row-start-2） */}
+          <div
+            className="clay-card min-w-0 w-full flex flex-col justify-between p-3.5 sm:p-4 lg:p-5 order-3 md:order-none md:col-start-1 md:row-start-2 lg:col-start-1 lg:row-start-2"
+            style={{
+              height: initialRightHeight
+                ? `${Math.max(initialRightHeight, memoHeight + 170)}px`
+                : undefined,
+            }}
+          >
+            <div className="flex flex-col gap-2.5 flex-1 min-h-0">
               <div className="flex items-center justify-between gap-2 px-1">
-                <button
-                  type="button"
-                  className="flex items-center gap-1.5 text-xs sm:text-sm font-black text-foreground hover:opacity-80 cursor-pointer"
-                  onClick={() => setShowMemo(!showMemo)}
-                >
-                  <PenTool className="size-3.5 sm:size-4 text-primary" />
-                  <span>ひらめきメモ（手書き）</span>
-                  <span className="text-[11px] font-bold text-muted-foreground">
-                    {showMemo ? "▲ とじる" : "▼ ひらく"}
+                <span className="text-xs sm:text-sm lg:text-base font-black text-foreground flex items-center gap-1.5 shrink-0 whitespace-nowrap">
+                  <PenTool className="size-3.5 sm:size-4 text-primary" /> ひらめきメモ（手書き）
+                </span>
+                <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                  <span className="text-xs font-bold text-muted-foreground hidden sm:inline whitespace-nowrap">
+                    図や計算を自由に書こう
                   </span>
-                </button>
-
-                {showMemo && (
-                  <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    type="button"
+                    className="tap clay-badge text-[11px] sm:text-xs font-black bg-surface text-foreground hover:scale-105 active:scale-95 whitespace-nowrap cursor-pointer"
+                    onClick={() => setMemoHeight((h) => Math.min(850, h + 80))}
+                    title="メモ欄を下へ広げる"
+                  >
+                    <Plus className="size-3 sm:size-3.5" />
+                    <span>広げる</span>
+                  </button>
+                  {memoHeight > 220 && (
                     <button
                       type="button"
-                      className="tap clay-badge text-[11px] font-black bg-surface text-foreground hover:scale-105 active:scale-95"
-                      onClick={() => setMemoHeight((h) => Math.min(600, h + 80))}
-                      title="メモ欄を下へ広げる"
+                      className="tap clay-badge text-[11px] sm:text-xs font-black bg-muted/60 text-muted-foreground hover:scale-105 active:scale-95 whitespace-nowrap cursor-pointer"
+                      onClick={() => setMemoHeight(220)}
+                      title="初期サイズに戻す"
                     >
-                      <Plus className="size-3" />
-                      <span>広げる</span>
+                      <Minus className="size-3 sm:size-3.5" />
+                      <span>もどす</span>
                     </button>
-                    {memoHeight > 200 && (
-                      <button
-                        type="button"
-                        className="tap clay-badge text-[11px] font-black bg-muted/60 text-muted-foreground hover:scale-105 active:scale-95"
-                        onClick={() => setMemoHeight(200)}
-                        title="初期サイズに戻す"
-                      >
-                        <Minus className="size-3" />
-                        <span>もどす</span>
-                      </button>
-                    )}
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
 
-              {showMemo ? (
-                <div className="mt-2.5 flex flex-col gap-2">
-                  <div className="clay-inset p-1.5 rounded-2xl bg-[#faf6f0] flex-1 min-h-0 flex flex-col">
-                    <DrawCanvas height={memoHeight} templates />
-                  </div>
-                  {/* 下方向にドラッグして広げられるハンドルバー */}
-                  <div
-                    className="flex flex-col items-center justify-center py-1 cursor-row-resize select-none group touch-none rounded-xl hover:bg-muted/40 transition-colors"
-                    onPointerDown={handleDragDown}
-                    onPointerMove={handleDragMove}
-                    onPointerUp={handleDragUp}
-                    onPointerCancel={handleDragUp}
-                    title="上下にドラッグしてメモ欄を自由に伸縮できます"
-                  >
-                    <div className="clay-badge !rounded-xl text-[10px] font-black text-muted-foreground group-hover:text-foreground !py-0.5 !px-2.5">
-                      <GripHorizontal className="size-3" />
-                      <span>ドラッグして伸縮 ({memoHeight}px)</span>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setShowMemo(true)}
-                  className="mt-1.5 clay-inset p-2 rounded-xl bg-[#faf6f0]/70 hover:bg-[#faf6f0] text-center text-xs font-bold text-muted-foreground transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
-                >
-                  <PenTool className="size-3 text-muted-foreground/70" />
-                  <span>ここをタップしてメモを開く（図や計算を手書きできます）</span>
-                </button>
-              )}
+              {/* 描画キャンバス（初期表示で右カラムとボトムを揃えるautoFill対応） */}
+              <div className="clay-inset p-1.5 rounded-2xl bg-[#faf6f0] flex-1 min-h-0 flex flex-col">
+                <DrawCanvas height={memoHeight} templates autoFill />
+              </div>
+            </div>
+
+            {/* 下方向にドラッグして広げられるハンドルバー */}
+            <div
+              className="mt-2.5 flex flex-col items-center justify-center py-1 cursor-row-resize select-none group touch-none rounded-xl hover:bg-muted/40 transition-colors"
+              onPointerDown={handleDragDown}
+              onPointerMove={handleDragMove}
+              onPointerUp={handleDragUp}
+              onPointerCancel={handleDragUp}
+              title="上下にドラッグしてメモ欄を自由に伸縮できます"
+            >
+              <div className="clay-badge !rounded-xl text-[10px] sm:text-[11px] font-black text-muted-foreground group-hover:text-foreground !py-0.5 !px-3">
+                <GripHorizontal className="size-3 sm:size-3.5" />
+                <span>ドラッグして下へ広げる ({memoHeight}px)</span>
+              </div>
             </div>
           </div>
 
-          {/* 右カラム：こたえ（キーパッド / 選択肢 ＆ ヒント） */}
-          <div className="w-full flex flex-col gap-3 sticky top-2 sm:top-3">
-            <div ref={rightColRef} className="clay-card min-w-0 w-full flex flex-col p-3.5 sm:p-4 md:p-5">
+          {/* 3. 答えカード（PC時：下部右側 lg:col-start-2 lg:row-start-2 ／ iPad時：右側 md:col-start-2 md:row-start-1 md:row-span-2） */}
+          <div className="w-full flex flex-col gap-3 order-2 md:order-none md:col-start-2 md:row-start-1 md:row-span-2 lg:col-start-2 lg:row-start-2 lg:row-span-1">
+            <div ref={rightColRef} className="clay-card min-w-0 w-full flex flex-col p-3.5 sm:p-4 lg:p-5">
               <div className="flex flex-col gap-2.5 sm:gap-3">
                 <span className="text-xs sm:text-sm font-black text-muted-foreground block">こたえを 入力</span>
 
                 {problem.answerType === "choice" ? (
-                  <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
+                  <div className="grid grid-cols-2 gap-2 sm:gap-2.5 lg:gap-3">
                     {problem.choices?.map((c) => (
                       <button
                         key={c}
                         type="button"
-                        className="clay-tile-white min-h-13 sm:min-h-14 md:min-h-15 px-2 text-base sm:text-lg md:text-xl font-black text-foreground active:scale-95 flex items-center justify-center cursor-pointer"
+                        className="clay-tile-white min-h-13 sm:min-h-14 lg:min-h-16 px-2 text-base sm:text-lg lg:text-xl font-black text-foreground active:scale-95 flex items-center justify-center cursor-pointer"
                         onClick={() => check(c)}
                       >
                         <MathFormula text={c} />
@@ -760,10 +764,10 @@ export function ThinkingSolver({ problem, onDone }: { problem: ThinkProblem; onD
                 ) : (
                   <>
                     <div
-                      className="clay-inset mx-auto mb-0.5 min-h-12 sm:min-h-14 w-full rounded-2xl text-center text-2xl sm:text-3xl font-black text-foreground bg-[#ede5d8] flex items-center justify-center shadow-inner tracking-wider"
+                      className="clay-inset mx-auto mb-0.5 lg:mb-1 min-h-12 sm:min-h-14 lg:min-h-16 w-full rounded-2xl text-center text-2xl sm:text-3xl lg:text-4xl font-black text-foreground bg-[#ede5d8] flex items-center justify-center shadow-inner tracking-wider"
                       aria-live="polite"
                     >
-                      {value || <span className="text-muted-foreground/40 text-base sm:text-lg font-bold">数字を入力</span>}
+                      {value || <span className="text-muted-foreground/40 text-base sm:text-lg lg:text-xl font-bold">数字を入力</span>}
                     </div>
                     <Keypad value={value} onChange={setValue} onSubmit={() => check(value)} />
                   </>
@@ -771,23 +775,25 @@ export function ThinkingSolver({ problem, onDone }: { problem: ThinkProblem; onD
 
                 {/* おしいメッセージ */}
                 {msg && (
-                  <div className="clay-card-peach p-2.5 text-xs sm:text-sm font-black text-center text-[#592518]" role="status">
+                  <div className="clay-card-peach p-2.5 sm:p-3 lg:p-3 text-xs sm:text-sm font-black text-center text-[#592518]" role="status">
                     {msg}
                   </div>
                 )}
 
                 {/* ヒント表示（現在開いているもの） */}
                 {hint > 0 && (
-                  <div className="space-y-1.5 pt-1 max-h-48 overflow-y-auto pr-1">
+                  <div className="space-y-1.5 lg:space-y-2 pt-1 max-h-48 lg:max-h-none overflow-y-auto lg:overflow-visible pr-1">
                     {problem.hints.slice(0, hint).map((h, i) => (
                       <div
                         key={i}
-                        className="clay-card p-2.5 text-xs sm:text-sm font-bold"
+                        className="clay-card p-2.5 lg:p-3 text-xs sm:text-sm font-bold"
                       >
-                        <span className="clay-badge text-[10px] font-black bg-primary-soft text-primary-dark mb-0.5">
+                        <span className="clay-badge text-[10px] font-black bg-primary-soft text-primary-dark mb-0.5 lg:mb-1">
                           {HINT_TITLE[i + 1]}
                         </span>
-                        <p className="mt-0.5 text-foreground leading-relaxed">{h}</p>
+                        <p className="mt-0.5 lg:mt-1 text-foreground leading-relaxed">
+                          <RubyText text={h} />
+                        </p>
                       </div>
                     ))}
                   </div>
@@ -797,7 +803,7 @@ export function ThinkingSolver({ problem, onDone }: { problem: ThinkProblem; onD
               {/* ヒント＆解説ボタン（カード最下部） */}
               <div
                 ref={hintBtnContainerRef}
-                className="flex items-center justify-between gap-2 pt-2.5 border-t border-border/60 mt-3"
+                className="flex items-center justify-between gap-2 pt-2.5 lg:pt-3 border-t border-border/60 mt-3 lg:mt-auto scroll-mb-8"
               >
                 {hint < 3 ? (
                   <button
@@ -842,7 +848,7 @@ export function ThinkingSolver({ problem, onDone }: { problem: ThinkProblem; onD
                       : "clay-card text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  {m}
+                  <RubyText text={m} />
                 </button>
               );
             })}
@@ -864,14 +870,18 @@ export function ThinkingSolver({ problem, onDone }: { problem: ThinkProblem; onD
               こたえ
             </span>
             <p className="text-3xl sm:text-4xl font-black text-primary mt-2">{problem.answer}</p>
-            <p className="mt-3 text-base sm:text-lg leading-relaxed text-foreground font-medium">{problem.explanation}</p>
+            <p className="mt-3 text-base sm:text-lg leading-relaxed text-foreground font-medium">
+              <RubyText text={problem.explanation} />
+            </p>
           </div>
           {problem.altSolutions.map((a, i) => (
             <div key={i} className="clay-card p-4 sm:p-5 text-left">
               <span className="clay-badge text-xs font-black bg-muted/70 text-muted-foreground">
                 べつの ときかた {i + 1}
               </span>
-              <p className="text-sm sm:text-base leading-relaxed mt-2 text-foreground font-medium">{a}</p>
+              <p className="text-sm sm:text-base leading-relaxed mt-2 text-foreground font-medium">
+                <RubyText text={a} />
+              </p>
             </div>
           ))}
 

@@ -138,16 +138,16 @@ function Review() {
 
     return (
       <div className="min-h-screen bg-[#f5efe6] text-foreground">
-        <div className="mx-auto max-w-6xl px-3 sm:px-6 md:px-8 py-2.5 sm:py-3.5 md:py-4">
-          <div className="mb-2 sm:mb-3 flex items-center justify-between gap-3">
+        <div className="mx-auto max-w-6xl px-3 sm:px-6 md:px-8 pt-2.5 sm:pt-3.5 md:pt-4 lg:pt-6 pb-12 sm:pb-16">
+          <div className="mb-2 sm:mb-3 lg:mb-5 flex items-center justify-between gap-3">
             <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
               <button
                 type="button"
-                className="tap clay-tile-white size-9 sm:size-10 !rounded-2xl transition-transform hover:scale-105 active:scale-95"
+                className="tap clay-tile-white size-9 sm:size-10 lg:size-11 !rounded-2xl transition-transform hover:scale-105 active:scale-95"
                 onClick={() => navigate({ to: "/" })}
                 aria-label="やめる"
               >
-                <X className="size-5 text-muted-foreground" />
+                <X className="size-5 lg:size-6 text-muted-foreground" />
               </button>
               <div className="min-w-0">
                 <span className="clay-badge text-[11px] font-black bg-primary-soft text-primary-dark">

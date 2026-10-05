@@ -16,7 +16,7 @@ vi.mock("@tanstack/react-router", async () => {
 describe("Review Route", () => {
   beforeEach(() => {
     useApp.setState({
-      children: [{ id: "c1", nickname: "テスト", grade: 6, rubyMode: "ruby", avatar: "pocket", recommendedLevel: "think-5" }],
+      children: [{ id: "c1", nickname: "テスト", grade: 6, rubyMode: "ruby", avatar: "pocket", recommendedLevel: "think-5", createdAt: Date.now() }],
       activeChildId: "c1",
       sessions: [],
       attempts: [],

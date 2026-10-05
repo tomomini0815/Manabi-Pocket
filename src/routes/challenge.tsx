@@ -3,6 +3,7 @@ import { useState } from "react";
 import { X, Trophy } from "lucide-react";
 import { useRequireChild } from "@/components/KidShell";
 import { ThinkingSolver } from "@/components/ThinkingSolver";
+import { RubyText, stripFurigana } from "@/components/Kana";
 import { findThinking, weekKey, weeklyChallenge, DIFFICULTY_LABEL } from "@/lib/thinking";
 import { useApp } from "@/lib/store";
 
@@ -81,13 +82,15 @@ function Challenge() {
               </div>
               <div className="flex items-center justify-center gap-2 mb-2">
                 <span className="clay-badge text-xs font-black bg-primary-soft text-primary-dark">
-                  {current.typeTag}
+                  {stripFurigana(current.typeTag)}
                 </span>
                 <span className="clay-badge text-xs font-black bg-amber-100 text-amber-900 border border-amber-300/40">
-                  {DIFFICULTY_LABEL[current.difficulty]}
+                  {stripFurigana(DIFFICULTY_LABEL[current.difficulty] ?? "")}
                 </span>
               </div>
-              <p className="mt-4 text-2xl sm:text-3xl leading-relaxed font-black text-foreground">{current.question}</p>
+              <p className="mt-4 text-2xl sm:text-3xl leading-relaxed font-black text-foreground">
+                <RubyText text={current.question} />
+              </p>
               <p className="mt-3 text-base text-muted-foreground font-bold">とけなくても だいじょうぶ。ちょうせんした ことが きろくに のこるよ。</p>
               <button className="btn-kid btn-primary mt-6 w-full text-xl" onClick={() => setSolving(current.id)}>
                 {history.some((h) => h.problemId === current.id) ? "もういちど ちょうせん" : "ちょうせんする"}
@@ -101,7 +104,7 @@ function Challenge() {
                     const p = findThinking(id);
                     return p ? (
                       <button key={id} onClick={() => setSolving(id)} className="flex min-h-16 w-full items-center rounded-xl bg-surface px-4 text-left text-lg">
-                        {p.question.slice(0, 32)}…
+                        {stripFurigana(p.question).slice(0, 32)}…
                       </button>
                     ) : null;
                   })}

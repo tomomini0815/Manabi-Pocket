@@ -46,11 +46,14 @@ describe("Thinking Problems Bank & Generators", () => {
     for (const lvl of thinkingSub!.levels) {
       for (let i = 0; i < lvl.steps.length; i++) {
         const st = lvl.steps[i];
+        if (!st) continue;
         const found = findStep(lvl.id, st.id);
         expect(found).not.toBeNull();
         if (i < lvl.steps.length - 1) {
           expect(found!.next).toBeDefined();
-          expect(found!.next!.id).toBe(lvl.steps[i + 1].id);
+          const nextStep = lvl.steps[i + 1];
+          expect(nextStep).toBeDefined();
+          expect(found!.next!.id).toBe(nextStep!.id);
         } else {
           expect(found!.next).toBeUndefined();
         }

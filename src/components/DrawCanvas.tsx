@@ -61,8 +61,11 @@ export function DrawCanvas({
       });
       observer.observe(c);
 
-      return () => observer.disconnect();
+      return () => {
+        observer.disconnect();
+      };
     }
+    return undefined;
   }, []);
 
   const resolve = (v: string) => {
@@ -215,8 +218,10 @@ export function DrawCanvas({
             minHeight: typeof height === "number" ? `${height}px` : height,
             height: autoFill ? "100%" : height,
             touchAction: "none",
+            backgroundImage: "radial-gradient(#d3c6b5 1.1px, transparent 1.1px)",
+            backgroundSize: "20px 20px",
           }}
-          className={`relative w-full rounded-xl border-2 border-dashed border-input bg-surface ${autoFill ? "flex-1 min-h-0" : ""} ${className}`}
+          className={`relative w-full rounded-xl border-2 border-dashed border-[#d8cdbf] bg-[#faf6f0] ${autoFill ? "flex-1 min-h-0" : ""} ${className}`}
           onPointerDown={down}
           onPointerMove={move}
           onPointerUp={up}

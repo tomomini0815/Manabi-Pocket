@@ -56,7 +56,7 @@ function DrillInner({ levelId, stepId }: { levelId: string; stepId: string }) {
     if (next) return { levelId: level.id, stepId: next.id, title: next.title };
     const levelIdx = subject.levels.findIndex((l) => l.id === level.id);
     const nextLevel = subject.levels[levelIdx + 1];
-    if (nextLevel && nextLevel.steps.length > 0) {
+    if (nextLevel && nextLevel.steps.length > 0 && nextLevel.steps[0]) {
       const firstStep = nextLevel.steps[0];
       return { levelId: nextLevel.id, stepId: firstStep.id, title: `${nextLevel.name}・${firstStep.title}` };
     }
@@ -114,7 +114,7 @@ function DrillInner({ levelId, stepId }: { levelId: string; stepId: string }) {
 
     return (
       <div className="min-h-screen bg-[#f5efe6] text-foreground">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 md:px-8 py-4 sm:py-6">
+        <div className="mx-auto max-w-6xl px-3 sm:px-6 md:px-8 pt-2.5 sm:pt-3.5 md:pt-4 lg:pt-6 pb-12 sm:pb-16">
           <div className="mb-5 flex items-center justify-between gap-3">
             <div className="flex items-center gap-3 min-w-0">
               <button

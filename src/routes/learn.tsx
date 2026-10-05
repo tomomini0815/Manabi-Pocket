@@ -65,11 +65,11 @@ function Learn() {
   return (
     <KidShell
       header={
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold">がくしゅう</h1>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-soft px-3 py-1 text-sm font-bold text-primary-dark">
+        <div className="flex items-center gap-2 sm:gap-3 whitespace-nowrap overflow-hidden">
+          <h1 className="text-lg sm:text-2xl font-black text-foreground shrink-0">がくしゅう</h1>
+          <span className="inline-flex items-center gap-1 sm:gap-1.5 rounded-full bg-primary-soft px-2.5 sm:px-3 py-0.5 sm:py-1 text-xs sm:text-sm font-bold text-primary-dark truncate">
             <span>{GRADE_ICONS[childGrade]}</span>
-            <span>{child.nickname}さん：{gradeLabel(childGrade)}</span>
+            <span className="truncate">{child.nickname}さん：{gradeLabel(childGrade)}</span>
           </span>
         </div>
       }

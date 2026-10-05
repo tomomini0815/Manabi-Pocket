@@ -35,32 +35,35 @@ const tabs = [
 
 export function KidShell({ children, header }: { children: ReactNode; header?: ReactNode }) {
   return (
-    <div className="mx-auto flex min-h-screen max-w-6xl flex-col">
-      <header className="flex items-center gap-3 px-4 sm:px-6 md:px-8 pt-5 pb-2">
-        <div className="flex-1">{header}</div>
+    <div className="mx-auto flex min-h-dvh max-w-6xl flex-col">
+      <header className="flex items-center gap-2 sm:gap-3 px-3 sm:px-6 md:px-8 pt-3 sm:pt-5 pb-2">
+        <div className="flex-1 min-w-0">{header}</div>
         <SoundToggle />
         <Link
           to="/parent/gate"
-          className="tap clay-badge inline-flex items-center px-4 py-2 text-xs sm:text-sm font-black text-muted-foreground bg-surface/90 hover:text-foreground transition-transform hover:scale-105 active:scale-95"
+          className="tap clay-badge shrink-0 inline-flex items-center px-3 sm:px-4 py-2 text-xs sm:text-sm font-black text-muted-foreground bg-surface/90 hover:text-foreground transition-transform hover:scale-105 active:scale-95"
         >
           おうちの方へ
         </Link>
       </header>
-      <main className="flex-1 px-4 sm:px-6 md:px-8 pb-36 pt-2">{children}</main>
+      <main className="flex-1 px-3 sm:px-6 md:px-8 pb-32 sm:pb-36 pt-2">{children}</main>
 
-      {/* フローティング・クレイナビゲーションバー（参考画像準拠の立体粘土バー） */}
-      <nav className="fixed inset-x-0 bottom-4 z-20 px-4" aria-label="メニュー">
-        <div className="mx-auto max-w-md clay-board p-2 bg-[#f9f5ed]/95 backdrop-blur-md">
-          <ul className="grid grid-cols-3 gap-2">
+      {/* フローティング・クレイナビゲーションバー（セーフエリア対応） */}
+      <nav
+        className="fixed inset-x-0 bottom-3 sm:bottom-4 z-20 px-3 sm:px-4 pb-[env(safe-area-inset-bottom,0px)]"
+        aria-label="メニュー"
+      >
+        <div className="mx-auto max-w-md clay-board p-1.5 sm:p-2 bg-[#f9f5ed]/95 backdrop-blur-md">
+          <ul className="grid grid-cols-3 gap-1.5 sm:gap-2">
             {tabs.map(({ to, label, icon: Icon }) => (
               <li key={to}>
                 <Link
                   to={to}
                   activeOptions={{ exact: to === "/" }}
-                  className="flex min-h-[58px] flex-col items-center justify-center gap-1 rounded-2xl text-xs sm:text-sm font-black text-muted-foreground transition-all duration-150 hover:text-foreground active:scale-95"
+                  className="flex min-h-[52px] sm:min-h-[58px] flex-col items-center justify-center gap-1 rounded-2xl text-xs sm:text-sm font-black text-muted-foreground transition-all duration-150 hover:text-foreground active:scale-95"
                   activeProps={{
                     className:
-                      "clay-tile-white !text-primary-dark scale-[1.03] shadow-[0_10px_20px_-3px_rgba(150,120,95,0.28),inset_0_3px_4px_rgba(255,255,255,0.98),inset_0_-3px_5px_rgba(140,110,85,0.16)]",
+                      "clay-tile-white !text-primary-dark scale-[1.02] sm:scale-[1.03] shadow-[0_10px_20px_-3px_rgba(150,120,95,0.28),inset_0_3px_4px_rgba(255,255,255,0.98),inset_0_-3px_5px_rgba(140,110,85,0.16)]",
                   }}
                 >
                   <Icon className="size-5 sm:size-6" aria-hidden />

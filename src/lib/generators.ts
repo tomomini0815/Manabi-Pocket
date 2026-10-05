@@ -10,6 +10,7 @@ export type Problem = {
   input: InputKind;
   choices?: string[];
   hints: [string, string, string];
+  noRuby?: boolean;
 };
 
 type Params = Record<string, unknown>;
@@ -56,6 +57,7 @@ type GenOut = {
   input: InputKind;
   choices?: string[];
   hints: [string, string, string];
+  noRuby?: boolean;
 };
 type Gen = (p: Params, r: Rand, delta: number) => GenOut;
 
@@ -142,7 +144,7 @@ const gens: Record<string, Gen> = {
       answer: String(s),
       input: "keypad",
       hints: [
-        s <= 10 ? "りんごを ぜんぶ かぞえてみよう" : a >= 10 ? "一のくらいから たそう" : "10の まとまりを つくろう",
+        s <= 10 ? "りんごを ぜんぶ かぞえてみよう" : a >= 10 ? "[一|いち]のくらいから たそう" : "10の まとまりを つくろう",
         `${a} から ${b} こ すすめると…`,
         `${a} + ${b} = ${s}`,
       ],
@@ -173,7 +175,7 @@ const gens: Record<string, Gen> = {
       answer: String(a - b),
       input: "keypad",
       hints: [
-        a <= 10 ? `${b} こ たべたら のこりは？` : "一のくらいが ひけないときは 10を かりよう",
+        a <= 10 ? `${b} こ たべたら のこりは？` : "[一|いち]のくらいが ひけないときは 10を かりよう",
         `${b} + □ = ${a} と かんがえても いいよ`,
         `${a} − ${b} = ${a - b}`,
       ],
@@ -237,7 +239,7 @@ const gens: Record<string, Gen> = {
         answer: ans,
         input: "choice",
         choices: choices(r, ans, pool),
-        hints: ["分母は そのままだよ", "分子だけを ひき算しよう", `${a}/${den} − ${b}/${den} = ${ans}`],
+        hints: ["[分母|ぶんぼ]は そのままだよ", "[分子|ぶんし]だけを ひき[算|ざん]しよう", `${a}/${den} − ${b}/${den} = ${ans}`],
       };
     }
     const a = int(r, 1, den - 2);
@@ -249,7 +251,7 @@ const gens: Record<string, Gen> = {
       answer: ans,
       input: "choice",
       choices: choices(r, ans, pool),
-      hints: ["分母が おなじときは 分母は そのまま", "分子だけを たそう", `${a}/${den} + ${b}/${den} = ${ans}`],
+      hints: ["[分母|ぶんぼ]が おなじときは [分母|ぶんぼ]は そのまま", "[分子|ぶんし]だけを たそう", `${a}/${den} + ${b}/${den} = ${ans}`],
     };
   },
 
@@ -267,7 +269,7 @@ const gens: Record<string, Gen> = {
         answer: ans,
         input: "choice",
         choices: choices(r, ans, pool),
-        hints: ["小数点の いちを そろえて ひこう", `0.1 が ${a} こから ${b} こ ひくと…`, `${fmt(a)} − ${fmt(b)} = ${ans}`],
+        hints: ["[小数点|しょうすうてん]の いちを そろえて ひこう", `0.1 が ${a} こから ${b} こ ひくと…`, `${fmt(a)} − ${fmt(b)} = ${ans}`],
       };
     }
     const a = int(r, 1, num(p, "max", 9));
@@ -279,7 +281,7 @@ const gens: Record<string, Gen> = {
       answer: ans,
       input: "choice",
       choices: choices(r, ans, pool),
-      hints: ["0.1 が いくつ分か かんがえよう", `0.1 が ${a} こと ${b} こ`, `${fmt(a)} + ${fmt(b)} = ${ans}`],
+      hints: ["0.1 が いくつ[分|ぶん]か かんがえよう", `0.1 が ${a} こと ${b} こ`, `${fmt(a)} + ${fmt(b)} = ${ans}`],
     };
   },
 
@@ -308,11 +310,11 @@ const gens: Record<string, Gen> = {
       const pool = [`${h}じ${addM + 10}ふん`, `${h + 1}じ`, `${h}じ${Math.max(5, addM - 10)}ふん`];
       return {
         prompt: `${h}じ から ${addM}ふん たつと、いま なんじ なんぷん？`,
-        visual: `⏰ ${h}:00 ＋ ${addM}分`,
+        visual: `⏰ ${h}:00 ＋ ${addM}[分|ふん]`,
         answer: ans,
         input: "choice",
         choices: choices(r, ans, pool),
-        hints: ["ふん だけが ふえるよ", `${addM}分 すすむと…`, `こたえは ${ans}`],
+        hints: ["ふん だけが ふえるよ", `${addM}[分|ふん] すすむと…`, `こたえは ${ans}`],
       };
     }
     // 午前午後
@@ -334,14 +336,14 @@ const gens: Record<string, Gen> = {
     const kind = p["kind"] || "length"; // length, volume, weight
     if (kind === "length") {
       const items = [
-        { q: "1cm は 何 mm？", a: "10", u: "mm", pool: ["10", "100", "1000", "1"] },
-        { q: "1m は 何 cm？", a: "100", u: "cm", pool: ["100", "10", "1000", "50"] },
-        { q: "1km は 何 m？", a: "1000", u: "m", pool: ["1000", "100", "10", "500"] },
-        { q: "3cm は 何 mm？", a: "30", u: "mm", pool: ["30", "300", "3", "13"] },
-        { q: "2m は 何 cm？", a: "200", u: "cm", pool: ["200", "20", "2000", "120"] },
-        { q: "5km は 何 m？", a: "5000", u: "m", pool: ["5000", "500", "50", "1500"] },
-        { q: "40mm は 何 cm？", a: "4", u: "cm", pool: ["4", "40", "400", "14"] },
-        { q: "300cm は 何 m？", a: "3", u: "m", pool: ["3", "30", "300", "3000"] },
+        { q: "1cm は [何|なん] mm？", a: "10", u: "mm", pool: ["10", "100", "1000", "1"] },
+        { q: "1m は [何|なん] cm？", a: "100", u: "cm", pool: ["100", "10", "1000", "50"] },
+        { q: "1km は [何|なん] m？", a: "1000", u: "m", pool: ["1000", "100", "10", "500"] },
+        { q: "3cm は [何|なん] mm？", a: "30", u: "mm", pool: ["30", "300", "3", "13"] },
+        { q: "2m は [何|なん] cm？", a: "200", u: "cm", pool: ["200", "20", "2000", "120"] },
+        { q: "5km は [何|なん] m？", a: "5000", u: "m", pool: ["5000", "500", "50", "1500"] },
+        { q: "40mm は [何|なん] cm？", a: "4", u: "cm", pool: ["4", "40", "400", "14"] },
+        { q: "300cm は [何|なん] m？", a: "3", u: "m", pool: ["3", "30", "300", "3000"] },
       ];
       const it = pick(r, items);
       return {
@@ -354,18 +356,18 @@ const gens: Record<string, Gen> = {
     }
     if (kind === "volume") {
       const items = [
-        { q: "1L は 何 dL？", a: "10", pool: ["10", "100", "1000", "1"] },
-        { q: "1L は 何 mL？", a: "1000", pool: ["1000", "100", "10", "500"] },
-        { q: "1dL は 何 mL？", a: "100", pool: ["100", "10", "1000", "50"] },
-        { q: "2L は 何 dL？", a: "20", pool: ["20", "200", "2", "2000"] },
-        { q: "3000mL は 何 L？", a: "3", pool: ["3", "30", "300", "13"] },
-        { q: "50dL は 何 L？", a: "5", pool: ["5", "50", "500", "15"] },
-        { q: "5L は 何 dL？", a: "50", pool: ["50", "500", "5", "5000"] },
-        { q: "200mL は 何 dL？", a: "2", pool: ["2", "20", "200", "2000"] },
-        { q: "4L は 何 mL？", a: "4000", pool: ["4000", "400", "40", "1400"] },
-        { q: "8dL は 何 mL？", a: "800", pool: ["800", "80", "8000", "8"] },
-        { q: "10dL は 何 L？", a: "1", pool: ["1", "10", "100", "2"] },
-        { q: "500mL は 何 dL？", a: "5", pool: ["5", "50", "500", "5000"] },
+        { q: "1L は [何|なん] dL？", a: "10", pool: ["10", "100", "1000", "1"] },
+        { q: "1L は [何|なん] mL？", a: "1000", pool: ["1000", "100", "10", "500"] },
+        { q: "1dL は [何|なん] mL？", a: "100", pool: ["100", "10", "1000", "50"] },
+        { q: "2L は [何|なん] dL？", a: "20", pool: ["20", "200", "2", "2000"] },
+        { q: "3000mL は [何|なん] L？", a: "3", pool: ["3", "30", "300", "13"] },
+        { q: "50dL は [何|なん] L？", a: "5", pool: ["5", "50", "500", "15"] },
+        { q: "5L は [何|なん] dL？", a: "50", pool: ["50", "500", "5", "5000"] },
+        { q: "200mL は [何|なん] dL？", a: "2", pool: ["2", "20", "200", "2000"] },
+        { q: "4L は [何|なん] mL？", a: "4000", pool: ["4000", "400", "40", "1400"] },
+        { q: "8dL は [何|なん] mL？", a: "800", pool: ["800", "80", "8000", "8"] },
+        { q: "10dL は [何|なん] L？", a: "1", pool: ["1", "10", "100", "2"] },
+        { q: "500mL は [何|なん] dL？", a: "5", pool: ["5", "50", "500", "5000"] },
       ];
       const it = pick(r, items);
       return {
@@ -378,18 +380,18 @@ const gens: Record<string, Gen> = {
     }
     // weight (9級)
     const items = [
-      { q: "1kg は 何 g？", a: "1000", pool: ["1000", "100", "10", "500"] },
-      { q: "1t は 何 kg？", a: "1000", pool: ["1000", "100", "10000", "10"] },
-      { q: "3kg は 何 g？", a: "3000", pool: ["3000", "300", "30", "1300"] },
-      { q: "2000g は 何 kg？", a: "2", pool: ["2", "20", "200", "2000"] },
-      { q: "4t は 何 kg？", a: "4000", pool: ["4000", "400", "40", "1400"] },
-      { q: "5kg は 何 g？", a: "5000", pool: ["5000", "500", "50", "1500"] },
-      { q: "5000kg は 何 t？", a: "5", pool: ["5", "50", "500", "5000"] },
-      { q: "8kg は 何 g？", a: "8000", pool: ["8000", "800", "80", "1800"] },
-      { q: "7000g は 何 kg？", a: "7", pool: ["7", "70", "700", "17"] },
-      { q: "2t は 何 kg？", a: "2000", pool: ["2000", "200", "20", "20000"] },
-      { q: "10000g は 何 kg？", a: "10", pool: ["10", "100", "1000", "1"] },
-      { q: "3t は 何 kg？", a: "3000", pool: ["3000", "300", "30", "30000"] },
+      { q: "1kg は [何|なん] g？", a: "1000", pool: ["1000", "100", "10", "500"] },
+      { q: "1t は [何|なん] kg？", a: "1000", pool: ["1000", "100", "10000", "10"] },
+      { q: "3kg は [何|なん] g？", a: "3000", pool: ["3000", "300", "30", "1300"] },
+      { q: "2000g は [何|なん] kg？", a: "2", pool: ["2", "20", "200", "2000"] },
+      { q: "4t は [何|なん] kg？", a: "4000", pool: ["4000", "400", "40", "1400"] },
+      { q: "5kg は [何|なん] g？", a: "5000", pool: ["5000", "500", "50", "1500"] },
+      { q: "5000kg は [何|なん] t？", a: "5", pool: ["5", "50", "500", "5000"] },
+      { q: "8kg は [何|なん] g？", a: "8000", pool: ["8000", "800", "80", "1800"] },
+      { q: "7000g は [何|なん] kg？", a: "7", pool: ["7", "70", "700", "17"] },
+      { q: "2t は [何|なん] kg？", a: "2000", pool: ["2000", "200", "20", "20000"] },
+      { q: "10000g は [何|なん] kg？", a: "10", pool: ["10", "100", "1000", "1"] },
+      { q: "3t は [何|なん] kg？", a: "3000", pool: ["3000", "300", "30", "30000"] },
     ];
     const it = pick(r, items);
     return {
@@ -397,35 +399,35 @@ const gens: Record<string, Gen> = {
       answer: it.a,
       input: "choice",
       choices: choices(r, it.a, it.pool),
-      hints: ["1kg ＝ 1000g、1t ＝ 1000kg だよ", "k（キロ）は1000倍のことだね", `こたえは ${it.a}`],
+      hints: ["1kg ＝ 1000g、1t ＝ 1000kg だよ", "k（キロ）は1000[倍|ばい]のことだね", `こたえは ${it.a}`],
     };
   },
 
   // 8級：がい数・四捨五入
   roundNumber(_p, r) {
     const numVal = int(r, 1200, 8900);
-    const place = pick(r, ["千の位まで", "百の位まで"]);
-    if (place === "千の位まで") {
+    const place = pick(r, ["[千|せん]の[位|くらい]まで", "[百|ひゃく]の[位|くらい]まで"]);
+    if (place === "[千|せん]の[位|くらい]まで") {
       const ansNum = Math.round(numVal / 1000) * 1000;
       const ans = String(ansNum);
       const pool = [String(ansNum + 1000), String(Math.max(1000, ansNum - 1000)), String(Math.floor(numVal / 1000) * 1000), String(Math.ceil(numVal / 100) * 100)];
       return {
-        prompt: `${numVal} を 四捨五入して 千の位までのがい数に すると？`,
+        prompt: `${numVal} を [四捨五入|ししゃごにゅう]して [千|せん]の[位|くらい]までの がい[数|すう]に すると？`,
         answer: ans,
         input: "choice",
         choices: choices(r, ans, pool),
-        hints: ["千の位までのがい数は、すぐ下の「百の位」を四捨五入するよ", "0,1,2,3,4は切り捨て、5,6,7,8,9は切り上げ", `こたえは ${ans}`],
+        hints: ["[千|せん]の[位|くらい]までの がい[数|すう]は、すぐ[下|した]の「[百|ひゃく]の[位|くらい]」を [四捨五入|ししゃごにゅう]するよ", "0,1,2,3,4は[切|き]り[捨|す]て、5,6,7,8,9は[切|き]り[上|あ]げ", `こたえは ${ans}`],
       };
     }
     const ansNum = Math.round(numVal / 100) * 100;
     const ans = String(ansNum);
     const pool = [String(ansNum + 100), String(Math.max(100, ansNum - 100)), String(Math.floor(numVal / 100) * 100)];
     return {
-      prompt: `${numVal} を 四捨五入して 百の位までのがい数に すると？`,
+      prompt: `${numVal} を [四捨五入|ししゃごにゅう]して [百|ひゃく]の[位|くらい]までの がい[数|すう]に すると？`,
       answer: ans,
       input: "choice",
       choices: choices(r, ans, pool),
-      hints: ["百の位までのがい数は、すぐ下の「十の位」を四捨五入するよ", "0,1,2,3,4は切り捨て、5,6,7,8,9は切り上げ", `こたえは ${ans}`],
+      hints: ["[百|ひゃく]の[位|くらい]までの がい[数|すう]は、すぐ[下|した]の「[十|じゅう]の[位|くらい]」を [四捨五入|ししゃごにゅう]するよ", "0,1,2,3,4は[切|き]り[捨|す]て、5,6,7,8,9は[切|き]り[上|あ]げ", `こたえは ${ans}`],
     };
   },
 
@@ -443,7 +445,7 @@ const gens: Record<string, Gen> = {
         answer: ans,
         input: "choice",
         choices: choices(r, ans, pool),
-        hints: ["小数点の位置をそのまま上にあげよう", `${a}の中に${b}がいくつあるかな？`, `${a} ÷ ${b} = ${ans}`],
+        hints: ["[小数点|しょうすうてん]の[位置|いち]をそのまま[上|うえ]にあげよう", `${a}の[中|なか]に${b}がいくつあるかな？`, `${a} ÷ ${b} = ${ans}`],
       };
     }
     // 小数×整数 または 小数×小数
@@ -458,7 +460,7 @@ const gens: Record<string, Gen> = {
         answer: ans,
         input: "choice",
         choices: choices(r, ans, pool),
-        hints: ["小数の桁数を合わせると 1桁＋1桁＝2桁 小数点以下になるよ", `整数としてかけてから小数点を2つ左へ動かそう`, `こたえは ${ans}`],
+        hints: ["[小数|しょうすう]の[桁数|けたすう]を[合|あ]わせると 1[桁|けた]＋1[桁|けた]＝2[桁|けた] [小数点以下|しょうすうてんいか]になるよ", `[整数|せいすう]としてかけてから[小数点|しょうすうてん]を2つ[左|ひだり]へ[動|うご]かそう`, `こたえは ${ans}`],
       };
     }
     const a = int(r, 11, 48) / 10;
@@ -470,7 +472,7 @@ const gens: Record<string, Gen> = {
       answer: ans,
       input: "choice",
       choices: choices(r, ans, pool),
-      hints: ["整数と同じように計算して、小数点をつけよう", `0.1が何個分になるか考えよう`, `こたえは ${ans}`],
+      hints: ["[整数|せいすう]と[同|おな]じように[計算|けいさん]して、[小数点|しょうすうてん]をつけよう", `0.1が[何個分|なんこぶん]になるか[考|かんが]えよう`, `こたえは ${ans}`],
     };
   },
 
@@ -487,11 +489,11 @@ const gens: Record<string, Gen> = {
       const ans = `${an}/${ad}`;
       const pool = [`${an + 1}/${ad}`, `${an}/${ad + 1}`, `${n}/${ad}`];
       return {
-        prompt: `${n}/${d} を 約分して いちばん簡単な分数に すると？`,
+        prompt: `${n}/${d} を [約分|やくぶん]して いちばん[簡単|かんたん]な[分数|ぶんすう]に すると？`,
         answer: ans,
         input: "choice",
         choices: choices(r, ans, pool),
-        hints: [`分母と分子を同じ数（${g}）で割ってみよう`, `分子: ${n}÷${g}＝${an}`, `こたえは ${ans}`],
+        hints: [`[分母|ぶんぼ]と[分子|ぶんし]を[同|おな]じ[数|かず]（${g}）で[割|わ]ってみよう`, `[分子|ぶんし]: ${n}÷${g}＝${an}`,  `こたえは ${ans}`],
       };
     }
     if (mode === "mul") {
@@ -506,7 +508,7 @@ const gens: Record<string, Gen> = {
         answer: ans,
         input: "choice",
         choices: choices(r, ans, pool),
-        hints: ["分数のかけ算は「分子どうし」「分母どうし」をかけるよ", `分子は ${n1}×${n2}、分母は ${d1}×${d2}`, `こたえは ${ans}`],
+        hints: ["[分数|ぶんすう]のかけ[算|ざん]は「[分子|ぶんし]どうし」「[分母|ぶんぼ]どうし」をかけるよ", `[分子|ぶんし]は ${n1}×${n2}、[分母|ぶんぼ]は ${d1}×${d2}`,  `こたえは ${ans}`],
       };
     }
     if (mode === "div") {
@@ -521,7 +523,7 @@ const gens: Record<string, Gen> = {
         answer: ans,
         input: "choice",
         choices: choices(r, ans, pool),
-        hints: ["分数のわり算は、うしろの分数を「逆数」にしてかけるよ", `${n1}/${d1} × ${d2}/${n2} になるね`, `こたえは ${ans}`],
+        hints: ["[分数|ぶんすう]のわり[算|ざん]は、うしろの[分数|ぶんすう]を「[逆数|ぎゃくすう]」にしてかけるよ", `${n1}/${d1} × ${d2}/${n2} になるね`,  `こたえは ${ans}`],
       };
     }
     // 異分母の加減算（addDiff / subDiff）
@@ -551,7 +553,7 @@ const gens: Record<string, Gen> = {
         answer: ans,
         input: "choice",
         choices: choices(r, ans, pool),
-        hints: [`分母を ${pair.lcm} に 通分（そろえる）しよう`, `${pair.lcm / pair.d1}/${pair.lcm} − ${pair.lcm / pair.d2}/${pair.lcm}`, `こたえは ${ans}`],
+        hints: [`[分母|ぶんぼ]を ${pair.lcm} に [通分|つうぶん]（そろえる）しよう`, `${pair.lcm / pair.d1}/${pair.lcm} − ${pair.lcm / pair.d2}/${pair.lcm}`, `こたえは ${ans}`],
       };
     }
     const n1 = 1, n2 = 1;
@@ -563,7 +565,7 @@ const gens: Record<string, Gen> = {
       answer: ans,
       input: "choice",
       choices: choices(r, ans, pool),
-      hints: [`分母を ${pair.lcm} に 通分（そろえる）しよう`, `${pair.lcm / pair.d1}/${pair.lcm} + ${pair.lcm / pair.d2}/${pair.lcm}`, `こたえは ${ans}`],
+      hints: [`[分母|ぶんぼ]を ${pair.lcm} に [通分|つうぶん]（そろえる）しよう`, `${pair.lcm / pair.d1}/${pair.lcm} + ${pair.lcm / pair.d2}/${pair.lcm}`, `こたえは ${ans}`],
     };
   },
 
@@ -572,12 +574,12 @@ const gens: Record<string, Gen> = {
     const mode = pick(r, ["calc", "convert"]);
     if (mode === "convert") {
       const items = [
-        { q: "0.4 を 百分率（％）で 表すと？", a: "40%", pool: ["40%", "4%", "400%", "0.4%"] },
-        { q: "0.25 を 百分率（％）で 表すと？", a: "25%", pool: ["25%", "2.5%", "250%", "0.25%"] },
-        { q: "70% を 小数で 表すと？", a: "0.7", pool: ["0.7", "0.07", "7", "70"] },
-        { q: "3割 は 何 ％？", a: "30%", pool: ["30%", "3%", "300%", "13%"] },
-        { q: "1割5分 は 何 ％？", a: "15%", pool: ["15%", "1.5%", "150%", "5%"] },
-        { q: "50% は 何 割？", a: "5割", pool: ["5割", "50割", "0.5割", "1割"] },
+        { q: "0.4 を [百分率|ひゃくぶんりつ]（％）で [表|あらわ]すと？", a: "40%", pool: ["40%", "4%", "400%", "0.4%"] },
+        { q: "0.25 を [百分率|ひゃくぶんりつ]（％）で [表|あらわ]すと？", a: "25%", pool: ["25%", "2.5%", "250%", "0.25%"] },
+        { q: "70% を [小数|しょうすう]で [表|あらわ]すと？", a: "0.7", pool: ["0.7", "0.07", "7", "70"] },
+        { q: "3[割|わり] は [何|なん] ％？", a: "30%", pool: ["30%", "3%", "300%", "13%"] },
+        { q: "1[割|わり]5[分|ぶ] は [何|なん] ％？", a: "15%", pool: ["15%", "1.5%", "150%", "5%"] },
+        { q: "50% は [何|なん] [割|わり]？", a: "5[割|わり]", pool: ["5[割|わり]", "50[割|わり]", "0.5[割|わり]", "1[割|わり]"] },
       ];
       const it = pick(r, items);
       return {
@@ -585,20 +587,20 @@ const gens: Record<string, Gen> = {
         answer: it.a,
         input: "choice",
         choices: choices(r, it.a, it.pool),
-        hints: ["1 ＝ 100% ＝ 10割 だよ", "0.1 ＝ 10% ＝ 1割 だね", `こたえは ${it.a}`],
+        hints: ["1 ＝ 100% ＝ 10[割|わり] だよ", "0.1 ＝ 10% ＝ 1[割|わり] だね", `こたえは ${it.a}`],
       };
     }
     const base = pick(r, [100, 200, 300, 500, 1000]);
     const rate = pick(r, [10, 20, 30, 50]);
     const ansNum = (base * rate) / 100;
-    const ans = `${ansNum}円`;
-    const pool = [`${ansNum + 20}円`, `${ansNum * 2}円`, `${Math.max(10, ansNum - 10)}円`];
+    const ans = `${ansNum}[円|えん]`;
+    const pool = [`${ansNum + 20}[円|えん]`, `${ansNum * 2}[円|えん]`, `${Math.max(10, ansNum - 10)}[円|えん]`];
     return {
-      prompt: `${base}円 の ${rate}％ は いくら？`,
+      prompt: `${base}[円|えん] の ${rate}％ は いくら？`,
       answer: ans,
       input: "choice",
       choices: choices(r, ans, pool),
-      hints: [`${rate}％ は 小数にすると ${rate / 100} だね`, `${base} × ${rate / 100} を計算しよう`, `こたえは ${ans}`],
+      hints: [`${rate}％ は [小数|しょうすう]にすると ${rate / 100} だね`, `${base} × ${rate / 100} を[計算|けいさん]しよう`, `こたえは ${ans}`],
     };
   },
 
@@ -611,39 +613,39 @@ const gens: Record<string, Gen> = {
       const ans = `${s * t}km`;
       const pool = [`${s * t + 20}km`, `${s * t - 30}km`, `${s + t}km`];
       return {
-        prompt: `時速 ${s}km で ${t}時間 走ると、進む 道のりは 何km？`,
+        prompt: `[時速|じそく] ${s}km で ${t}[時間|じかん] [走|はし]ると、[進|すす]む [道|みち]のりは [何|なん]km？`,
         answer: ans,
         input: "choice",
         choices: choices(r, ans, pool),
-        hints: ["道のり ＝ 速さ × 時間 だよ", `${s} × ${t} を計算しよう`, `こたえは ${ans}`],
+        hints: ["[道|みち]のり ＝ [速|はや]さ × [時間|じかん] だよ", `${s} × ${t} を[計算|けいさん]しよう`, `こたえは ${ans}`],
       };
     }
     if (kind === "time") {
       const s = pick(r, [30, 40, 50]);
       const t = int(r, 2, 4);
       const d = s * t;
-      const ans = `${t}時間`;
-      const pool = [`${t + 1}時間`, `${t - 1}時間`, `${t * 2}時間`];
+      const ans = `${t}[時間|じかん]`;
+      const pool = [`${t + 1}[時間|じかん]`, `${t - 1}[時間|じかん]`, `${t * 2}[時間|じかん]`];
       return {
-        prompt: `${d}km の 道のりを 時速 ${s}km で 進むと、かかる 時間は 何時間？`,
+        prompt: `${d}km の [道|みち]のりを [時速|じそく] ${s}km で [進|すす]むと、かかる [時間|じかん]は [何時間|なんじかん]？`,
         answer: ans,
         input: "choice",
         choices: choices(r, ans, pool),
-        hints: ["時間 ＝ 道のり ÷ 速さ だよ", `${d} ÷ ${s} を計算しよう`, `こたえは ${ans}`],
+        hints: ["[時間|じかん] ＝ [道|みち]のり ÷ [速|はや]さ だよ", `${d} ÷ ${s} を[計算|けいさん]しよう`, `こたえは ${ans}`],
       };
     }
     // speed
     const t = int(r, 2, 3);
     const s = pick(r, [30, 40, 50, 60]);
     const d = s * t;
-    const ans = `時速${s}km`;
-    const pool = [`時速${s + 10}km`, `時速${s - 10}km`, `時速${s * 2}km`];
+    const ans = `[時速|じそく]${s}km`;
+    const pool = [`[時速|じそく]${s + 10}km`, `[時速|じそく]${s - 10}km`, `[時速|じそく]${s * 2}km`];
     return {
-      prompt: `${d}km の 道のりを ${t}時間 で 進んだときの 速さは？`,
+      prompt: `${d}km の [道|みち]のりを ${t}[時間|じかん] で [進|すす]んだときの [速|はや]さは？`,
       answer: ans,
       input: "choice",
       choices: choices(r, ans, pool),
-      hints: ["速さ ＝ 道のり ÷ 時間 だよ", `${d} ÷ ${t} を計算しよう`, `こたえは ${ans}`],
+      hints: ["[速|はや]さ ＝ [道|みち]のり ÷ [時間|じかん] だよ", `${d} ÷ ${t} を[計算|けいさん]しよう`, `こたえは ${ans}`],
     };
   },
 
@@ -657,18 +659,18 @@ const gens: Record<string, Gen> = {
       const ans = String(b * k);
       const pool = [String(b * k + 1), String(b * k - 2), String(b * (k + 1))];
       return {
-        prompt: `${a} : ${b} ＝ ${a * k} : □ の □に入る数は？`,
+        prompt: `${a} : ${b} ＝ ${a * k} : □ の □に[入|はい]る[数|かず]は？`,
         answer: ans,
         input: "keypad",
-        hints: [`左の数は ${a} から ${a * k} へ ${k}倍 になっているね`, `右の数 ${b} も ${k}倍 にしよう`, `こたえは ${ans}`],
+        hints: [`[左|ひだり]の[数|かず]は ${a} から ${a * k} へ ${k}[倍|ばい] になっているね`, `[右|みぎ]の[数|かず] ${b} も ${k}[倍|ばい] にしよう`, `こたえは ${ans}`],
       };
     }
     const ans = String(a * k);
     return {
-      prompt: `${a} : ${b} ＝ □ : ${b * k} の □に入る数は？`,
+      prompt: `${a} : ${b} ＝ □ : ${b * k} の □に[入|はい]る[数|かず]は？`,
       answer: ans,
       input: "keypad",
-      hints: [`右の数は ${b} から ${b * k} へ ${k}倍 になっているね`, `左の数 ${a} も ${k}倍 にしよう`, `こたえは ${ans}`],
+      hints: [`[右|みぎ]の[数|かず]は ${b} から ${b * k} へ ${k}[倍|ばい] になっているね`, `[左|ひだり]の[数|かず] ${a} も ${k}[倍|ばい] にしよう`, `こたえは ${ans}`],
     };
   },
 
@@ -680,11 +682,11 @@ const gens: Record<string, Gen> = {
       const h = int(r, 2, 8);
       const ans = String(w * h);
       return {
-        prompt: `たて ${h}cm、よこ ${w}cm の 長方形の 面積は 何cm²？`,
+        prompt: `たて ${h}cm、よこ ${w}cm の [長方形|ちょうほうけい]の [面積|めんせき]は [何|なん]cm²？`,
         visual: `📐 たて:${h}cm × よこ:${w}cm`,
         answer: ans,
         input: "keypad",
-        hints: ["長方形の面積 ＝ たて × よこ", `${h} × ${w} を計算しよう`, `こたえは ${ans}cm²`],
+        hints: ["[長方形|ちょうほうけい]の[面積|めんせき] ＝ たて × よこ", `${h} × ${w} を[計算|けいさん]しよう`, `こたえは ${ans}cm²`],
       };
     }
     if (kind === "triangleArea") {
@@ -692,11 +694,11 @@ const gens: Record<string, Gen> = {
       const h = int(r, 3, 8);
       const ans = String((base * h) / 2);
       return {
-        prompt: `底辺 ${base}cm、高さ ${h}cm の 三角形の 面積は 何cm²？`,
-        visual: `📐 底辺:${base}cm, 高さ:${h}cm`,
+        prompt: `[底辺|ていへん] ${base}cm、[高|たか]さ ${h}cm の [三角形|さんかっけい]の [面積|めんせき]は [何|なん]cm²？`,
+        visual: `📐 [底辺|ていへん]:${base}cm, [高|たか]さ:${h}cm`,
         answer: ans,
         input: "keypad",
-        hints: ["三角形の面積 ＝ 底辺 × 高さ ÷ 2", `${base} × ${h} ÷ 2 を計算しよう`, `こたえは ${ans}cm²`],
+        hints: ["[三角形|さんかっけい]の[面積|めんせき] ＝ [底辺|ていへん] × [高|たか]さ ÷ 2", `${base} × ${h} ÷ 2 を[計算|けいさん]しよう`, `こたえは ${ans}cm²`],
       };
     }
     if (kind === "cubeVolume") {
@@ -705,11 +707,11 @@ const gens: Record<string, Gen> = {
       const c = int(r, 2, 4);
       const ans = String(a * b * c);
       return {
-        prompt: `たて ${a}cm、よこ ${b}cm、高さ ${c}cm の 直方体の 体積は 何cm³？`,
+        prompt: `たて ${a}cm、よこ ${b}cm、[高|たか]さ ${c}cm の [直方体|ちょくほうたい]の [体積|たいせき]は [何|なん]cm³？`,
         visual: `📦 ${a}cm × ${b}cm × ${c}cm`,
         answer: ans,
         input: "keypad",
-        hints: ["直方体の体積 ＝ たて × よこ × 高さ", `${a} × ${b} × ${c} を計算しよう`, `こたえは ${ans}cm³`],
+        hints: ["[直方体|ちょくほうたい]の[体積|たいせき] ＝ たて × よこ × [高|たか]さ", `${a} × ${b} × ${c} を[計算|けいさん]しよう`, `こたえは ${ans}cm³`],
       };
     }
     // circleArea (6級)
@@ -719,12 +721,12 @@ const gens: Record<string, Gen> = {
     const ans = String(ansNum);
     const pool = [String(Math.round((ansNum + 6.28) * 100) / 100), String(Math.round(rad * 2 * 3.14 * 100) / 100), String(rad * rad * 3), String(Math.round((ansNum - 3.14) * 100) / 100)];
     return {
-      prompt: `半径 ${rad}cm の 円の 面積は 何cm²？（円周率は 3.14）`,
-      visual: `⭕ 半径 ${rad}cm`,
+      prompt: `[半径|はんけい] ${rad}cm の [円|えん]の [面積|めんせき]は [何|なん]cm²？（[円周率|えんしゅうりつ]は 3.14）`,
+      visual: `⭕ [半径|はんけい] ${rad}cm`,
       answer: ans,
       input: "choice",
       choices: choices(r, ans, pool),
-      hints: ["円の面積 ＝ 半径 × 半径 × 3.14", `${rad} × ${rad} × 3.14 を計算しよう`, `こたえは ${ans}cm²`],
+      hints: ["[円|えん]の[面積|めんせき] ＝ [半径|はんけい] × [半径|はんけい] × 3.14", `${rad} × ${rad} × 3.14 を[計算|けいさん]しよう`, `こたえは ${ans}cm²`],
     };
   },
 
@@ -739,7 +741,7 @@ const gens: Record<string, Gen> = {
         prompt: `x ＋ ${a} ＝ ${b} の x は？`,
         answer: ans,
         input: "keypad",
-        hints: [`x を求めるには、両辺から ${a} を引こう`, `x ＝ ${b} − ${a}`, `こたえは ${ans}`],
+        hints: [`x を[求|もと]めるには、[両辺|りょうへん]から ${a} を[引|ひ]こう`, `x ＝ ${b} − ${a}`, `こたえは ${ans}`],
       };
     }
     if (op === "sub") {
@@ -750,7 +752,7 @@ const gens: Record<string, Gen> = {
         prompt: `x − ${a} ＝ ${b} の x は？`,
         answer: String(x),
         input: "keypad",
-        hints: [`x を求めるには、${b} に ${a} を足そう`, `x ＝ ${b} ＋ ${a}`, `こたえは ${x}`],
+        hints: [`x を[求|もと]めるには、${b} に ${a} を[足|た]そう`, `x ＝ ${b} ＋ ${a}`, `こたえは ${x}`],
       };
     }
     // mul
@@ -761,7 +763,7 @@ const gens: Record<string, Gen> = {
       prompt: `x × ${a} ＝ ${b} の x は？`,
       answer: String(x),
       input: "keypad",
-      hints: [`x を求めるには、${b} を ${a} で割ろう`, `x ＝ ${b} ÷ ${a}`, `こたえは ${x}`],
+      hints: [`x を[求|もと]めるには、${b} を ${a} で[割|わ]ろう`, `x ＝ ${b} ÷ ${a}`, `こたえは ${x}`],
     };
   },
 
@@ -863,7 +865,7 @@ const gens: Record<string, Gen> = {
     const items = [
       { q: "がっこう（ □ ）いく。", a: "へ", c: ["へ", "を", "は", "が"] },
       { q: "りんご（ □ ）たべる。", a: "を", c: ["を", "へ", "に", "は"] },
-      { q: "わたし（ □ ）小学生です。", a: "は", c: ["は", "へ", "を", "で"] },
+      { q: "わたし（ □ ）[小学生|しょうがくせい]です。", a: "は", c: ["は", "へ", "を", "で"] },
       { q: "あめ（ □ ）ふっている。", a: "が", c: ["が", "を", "へ", "は"] },
       { q: "ともだち（ □ ）あう。", a: "に", c: ["に", "を", "は", "へ"] },
       { q: "いえ（ □ ）かえる。", a: "へ", c: ["へ", "を", "が", "は"] },
@@ -888,11 +890,11 @@ const gens: Record<string, Gen> = {
     ];
     const it = pick(r, items);
     return {
-      prompt: `正しい ことばを えらぼう：\n${it.q}`,
+      prompt: `[正|ただ]しい ことばを えらぼう：\n${it.q}`,
       answer: it.a,
       input: "choice",
       choices: shuffle(r, it.c),
-      hints: ["声に出して 読んでみよう", "どこへ行く？ なにを食べる？", `こたえは「${it.a}」`],
+      hints: ["[声|こえ]に[出|だ]して [読|よ]んでみよう", "どこへ[行|い]く？ なにを[食|た]べる？", `こたえは「${it.a}」`],
     };
   },
 
@@ -904,21 +906,21 @@ const gens: Record<string, Gen> = {
       { group: "のりもの", correct: "ひこうき", wrong: ["えんぴつ", "いぬ", "ピアノ"] },
       { group: "どうぶつ", correct: "きりん", wrong: ["チューリップ", "トマト", "つくえ"] },
       { group: "がっこうの どうぐ", correct: "ノート", wrong: ["フォーク", "スリッパ", "リンゴ"] },
-      { group: "とり（鳥）", correct: "つばめ", wrong: ["かえる", "うさぎ", "くじら"] },
+      { group: "とり（[鳥|とり]）", correct: "つばめ", wrong: ["かえる", "うさぎ", "くじら"] },
       { group: "うみの いきもの", correct: "イルカ", wrong: ["スズメ", "ライオン", "ちょうちょ"] },
-      { group: "むし（昆虫）", correct: "カブトムシ", wrong: ["金魚", "カラス", "リス"] },
-      { group: "しょっき（食器）", correct: "おさら", wrong: ["えんぴつ", "くつ", "まくら"] },
+      { group: "むし（[昆虫|こんちゅう]）", correct: "カブトムシ", wrong: ["[金魚|きんぎょ]", "カラス", "リス"] },
+      { group: "しょっき（[食器|しょっき]）", correct: "おさら", wrong: ["えんぴつ", "くつ", "まくら"] },
       { group: "からだの ぶぶん", correct: "あたま", wrong: ["ぼうし", "シャツ", "メガネ"] },
-      { group: "スポーツ", correct: "サッカー", wrong: ["ピアノ", "読書", "お絵かき"] },
-      { group: "がっき（楽器）", correct: "バイオリン", wrong: ["ボール", "ハサミ", "カメラ"] },
-      { group: "てんき（天気）", correct: "はれ", wrong: ["あさ", "よる", "はる"] },
-      { group: "きせつ（季節）", correct: "なつ", wrong: ["きょう", "あした", "きのう"] },
-      { group: "ふく（衣服）", correct: "ズボン", wrong: ["かばん", "時計", "えほん"] },
+      { group: "スポーツ", correct: "サッカー", wrong: ["ピアノ", "[読書|どくしょ]", "お[絵|え]かき"] },
+      { group: "がっき（[楽器|がっき]）", correct: "バイオリン", wrong: ["ボール", "ハサミ", "カメラ"] },
+      { group: "てんき（[天気|てんき]）", correct: "はれ", wrong: ["あさ", "よる", "はる"] },
+      { group: "きせつ（[季節|きせつ]）", correct: "なつ", wrong: ["きょう", "あした", "きのう"] },
+      { group: "ふく（[衣服|いふく]）", correct: "ズボン", wrong: ["かばん", "[時計|とけい]", "えほん"] },
       { group: "あまい たべもの", correct: "ケーキ", wrong: ["カレー", "ラーメン", "おすし"] },
-      { group: "さかな（魚）", correct: "マグロ", wrong: ["タコ", "エビ", "カニ"] },
-      { group: "はな（花）", correct: "ひまわり", wrong: ["もみじ", "まつ", "イチョウ"] },
-      { group: "いえの なか", correct: "台所（だいどころ）", wrong: ["公園", "道路", "駅"] },
-      { group: "ぶんぼうぐ", correct: "消しゴム", wrong: ["コップ", "ティッシュ", "タオル"] },
+      { group: "さかな（[魚|さかな]）", correct: "マグロ", wrong: ["タコ", "エビ", "カニ"] },
+      { group: "はな（[花|はな]）", correct: "ひまわり", wrong: ["もみじ", "まつ", "イチョウ"] },
+      { group: "いえの なか", correct: "[台所|だいどころ]", wrong: ["[公園|こうえん]", "[道路|どうろ]", "[駅|えき]"] },
+      { group: "ぶんぼうぐ", correct: "[消|け]しゴム", wrong: ["コップ", "ティッシュ", "タオル"] },
     ];
     const it = pick(r, groups);
     return {
@@ -926,7 +928,7 @@ const gens: Record<string, Gen> = {
       answer: it.correct,
       input: "choice",
       choices: shuffle(r, [it.correct, ...it.wrong]),
-      hints: ["どんな なかまか 考えよう", `${it.group}の なかまを 1つえらぼう`, `こたえは「${it.correct}」`],
+      hints: ["どんな なかまか [考|かんが]えよう", `${it.group}の なかまを 1つえらぼう`, `こたえは「${it.correct}」`],
     };
   },
 
@@ -966,6 +968,7 @@ const gens: Record<string, Gen> = {
       visual: k,
       answer: y,
       input: "choice",
+      noRuby: true,
       choices: choices(r, y, set.map(([, x]) => x)),
       hints: ["ぶんの なかで みたことは あるかな", `「${k}」を つかう ことばを おもいだそう`, `「${k}」は「${y}」`],
     };
@@ -982,14 +985,14 @@ const gens: Record<string, Gen> = {
       { t: "ねこが ひなたぼっこを しています。きもちよさそうに めを とじて ねむっています。", q: "ねこは なにを している？", a: "ねむっている", c: ["ねむっている", "ごはんを たべている", "はしっている", "ないている"] },
       { t: "あおいそらに しろいくもが ふわふわ うかんでいます。ことりたちが たのしそうに うたっています。", q: "うたっているのは だれ？", a: "ことりたち", c: ["ことりたち", "くも", "たいよう", "ちょうちょ"] },
       { t: "あきになると、もみじの はっぱが あかや きいろに そまります。やまが とても きれいです。", q: "はっぱは なにいろに そまった？", a: "あかや きいろ", c: ["あかや きいろ", "あおや みどり", "くろや しろ", "むらさき"] },
-      { t: "まいちゃんは にちようび、お母さんと 一緒に クッキーを つくりました。チョコの クッキーです。", q: "まいちゃんが つくったのは 何のクッキー？", a: "チョコの クッキー", c: ["チョコの クッキー", "イチゴの クッキー", "バナナの クッキー", "バターの クッキー"] },
-      { t: "こうすけくんは あさ 6時におきて、ラジオたいそうを しました。すっきり めが さめました。", q: "こうすけくんは 何時におきた？", a: "6時", c: ["5時", "6時", "7時", "8時"] },
+      { t: "まいちゃんは にちようび、[お母|おかあ]さんと [一緒|いっしょ]に クッキーを つくりました。チョコの クッキーです。", q: "まいちゃんが つくったのは [何|なん]のクッキー？", a: "チョコの クッキー", c: ["チョコの クッキー", "イチゴの クッキー", "バナナの クッキー", "バターの クッキー"] },
+      { t: "こうすけくんは あさ 6[時|じ]におきて、ラジオたいそうを しました。すっきり めが さめました。", q: "こうすけくんは [何時|なんじ]におきた？", a: "6[時|じ]", c: ["5[時|じ]", "6[時|じ]", "7[時|じ]", "8[時|じ]"] },
       { t: "にわの チューリップが あかい はなを さかせました。みつばちが とんできました。", q: "とんできたのは なに？", a: "みつばち", c: ["みつばち", "ちょうちょ", "とんぼ", "すずめ"] },
       { t: "りくくんは じぶんの じてんしゃを ピカピカに みがきました。あした ドライブに いきます。", q: "りくくんが みがいたのは？", a: "じてんしゃ", c: ["じてんしゃ", "くるま", "くつ", "つくえ"] },
       { t: "もりのおくで、りすが どんぐりを つちの なかに うめて います。ふゆの ごはんに するためです。", q: "りすは どんぐりを どうした？", a: "つちに うめた", c: ["つちに うめた", "たべた", "かわになげた", "きにのせた"] },
-      { t: "きょうの きゅうしょくは、カレーライスと フルーツポンチでした。みんな だいすきです。", q: "きょうの きゅうしょくは何？", a: "カレーライス", c: ["カレーライス", "ラーメン", "うどん", "ハンバーグ"] },
-      { t: "ゆうがた、にしのもりに 大きな にじが かかりました。7つの色が とても きれいでした。", q: "にじは何色あった？", a: "7つの色", c: ["5つの色", "6つの色", "7つの色", "8つの色"] },
-      { t: "ぽちという 名前の こいぬが、しっぽを ふりながら 走ってきました。", q: "こいぬの 名前は何？", a: "ぽち", c: ["ぽち", "しろ", "くろ", "ころ"] },
+      { t: "きょうの きゅうしょくは、カレーライスと フルーツポンチでした。みんな だいすきです。", q: "きょうの きゅうしょくは[何|なに]？", a: "カレーライス", c: ["カレーライス", "ラーメン", "うどん", "ハンバーグ"] },
+      { t: "ゆうがた、にしのもりに [大|おお]きな にじが かかりました。7つの[色|いろ]が とても きれいでした。", q: "にじは[何色|なにいろ]あった？", a: "7つの[色|いろ]", c: ["5つの[色|いろ]", "6つの[色|いろ]", "7つの[色|いろ]", "8つの[色|いろ]"] },
+      { t: "ぽちという [名前|なまえ]の こいぬが、しっぽを ふりながら [走|はし]ってきました。", q: "こいぬの [名前|なまえ]は[何|なに]？", a: "ぽち", c: ["ぽち", "しろ", "くろ", "ころ"] },
     ];
     const it = pick(r, items);
     return {
@@ -1008,7 +1011,7 @@ const gens: Record<string, Gen> = {
     const i = int(r, 0, 25);
     const ans = U.toLowerCase()[i] as string;
     return {
-      prompt: `「${U[i]}」の 小文字は？`,
+      prompt: `「${U[i]}」の [小文字|こもじ]は？`,
       visual: U[i] as string,
       answer: ans,
       input: "choice",
@@ -1023,11 +1026,11 @@ const gens: Record<string, Gen> = {
     const i = int(r, 0, 22);
     const ans = U[i + 3] as string;
     return {
-      prompt: `${U[i]}, ${U[i + 1]}, ${U[i + 2]}, □\n□ に はいる 文字は？`,
+      prompt: `${U[i]}, ${U[i + 1]}, ${U[i + 2]}, □\n□ に はいる [文字|もじ]は？`,
       answer: ans,
       input: "choice",
       choices: choices(r, ans, U.split("")),
-      hints: ["ABCの うたを うたってみよう", `「${U[i + 2]}」の つぎの 文字は？`, `こたえは ${ans}`],
+      hints: ["ABCの うたを うたってみよう", `「${U[i + 2]}」の つぎの [文字|もじ]は？`, `こたえは ${ans}`],
     };
   },
 
@@ -1057,19 +1060,19 @@ const gens: Record<string, Gen> = {
   // 英語：色と数（28問プール）
   engColorsNumbers(_p, r) {
     const items: [string, string, string][] = [
-      ["🔴", "red", "あか (赤)"],
-      ["🔵", "blue", "あお (青)"],
-      ["🟡", "yellow", "きいろ (黄)"],
-      ["🟢", "green", "みどり (緑)"],
-      ["⚪", "white", "しろ (白)"],
-      ["⚫", "black", "くろ (黒)"],
+      ["🔴", "red", "あか ([赤|あか])"],
+      ["🔵", "blue", "あお ([青|あお])"],
+      ["🟡", "yellow", "きいろ ([黄|きいろ])"],
+      ["🟢", "green", "みどり ([緑|みどり])"],
+      ["⚪", "white", "しろ ([白|しろ])"],
+      ["⚫", "black", "くろ ([黒|くろ])"],
       ["🌸", "pink", "ピンク"],
-      ["🍊", "orange", "オレンジ (橙)"],
-      ["🟣", "purple", "むらさき (紫)"],
-      ["🟤", "brown", "ちゃいろ (茶)"],
-      ["💧", "light blue", "みずいろ (水色)"],
-      ["🪙", "gold", "きんいろ (金)"],
-      ["🥈", "silver", "ぎんいろ (銀)"],
+      ["🍊", "orange", "オレンジ ([橙|だいだい])"],
+      ["🟣", "purple", "むらさき ([紫|むらさき])"],
+      ["🟤", "brown", "ちゃいろ ([茶|ちゃいろ])"],
+      ["💧", "light blue", "みずいろ ([水色|みずいろ])"],
+      ["🪙", "gold", "きんいろ ([金|きん])"],
+      ["🥈", "silver", "ぎんいろ ([銀|ぎん])"],
       ["1️⃣", "one", "いち (1)"],
       ["2️⃣", "two", "に (2)"],
       ["3️⃣", "three", "さん (3)"],
@@ -1087,12 +1090,12 @@ const gens: Record<string, Gen> = {
     ];
     const [v, ans, hintText] = pick(r, items);
     return {
-      prompt: `「${hintText}」を えいごで言うと？`,
+      prompt: `「${hintText}」を えいごで[言|い]うと？`,
       visual: v,
       answer: ans,
       input: "choice",
       choices: choices(r, ans, items.map(([, x]) => x)),
-      hints: ["色のなまえ・数のなまえを 思い出そう", `「${ans[0]}」から はじまるよ`, `こたえは ${ans}`],
+      hints: ["[色|いろ]のなまえ・[数|かず]のなまえを [思|おも]い[出|だ]そう", `「${ans[0]}」から はじまるよ`, `こたえは ${ans}`],
     };
   },
 
@@ -1108,10 +1111,10 @@ const gens: Record<string, Gen> = {
       { q: "「はじめまして」は えいごで？", a: "Nice to meet you", c: ["Nice to meet you", "Good night", "Excuse me", "Hello"] },
       { q: "「またね！」は えいごで？", a: "See you", c: ["See you", "I'm sorry", "Thank you", "Good morning"] },
       { q: "「どういたしまして」は えいごで？", a: "You're welcome", c: ["You're welcome", "Excuse me", "Good bye", "Hello"] },
-      { q: "「すみません（呼びかけ）」は えいごで？", a: "Excuse me", c: ["Excuse me", "Thank you", "I'm sorry", "Good bye"] },
-      { q: "「元気ですか？」は えいごで？", a: "How are you?", c: ["How are you?", "What's this?", "Who are you?", "Where are you?"] },
-      { q: "「元気です！」は えいごで？", a: "I'm fine", c: ["I'm fine", "I'm sorry", "Thank you", "Good bye"] },
-      { q: "「どうぞ（手渡すとき）」は えいごで？", a: "Here you are", c: ["Here you are", "Thank you", "Good job", "See you"] },
+      { q: "「すみません（[呼|よ]びかけ）」は えいごで？", a: "Excuse me", c: ["Excuse me", "Thank you", "I'm sorry", "Good bye"] },
+      { q: "「[元気|げんき]ですか？」は えいごで？", a: "How are you?", c: ["How are you?", "What's this?", "Who are you?", "Where are you?"] },
+      { q: "「[元気|げんき]です！」は えいごで？", a: "I'm fine", c: ["I'm fine", "I'm sorry", "Thank you", "Good bye"] },
+      { q: "「どうぞ（[手渡|てわた]すとき）」は えいごで？", a: "Here you are", c: ["Here you are", "Thank you", "Good job", "See you"] },
       { q: "「おたんじょうび おめでとう！」は？", a: "Happy birthday", c: ["Happy birthday", "Good luck", "Welcome", "Thank you"] },
       { q: "「がんばって！」は えいごで？", a: "Good luck", c: ["Good luck", "Good night", "Good bye", "I'm sorry"] },
       { q: "「ようこそ！」は えいごで？", a: "Welcome", c: ["Welcome", "Good bye", "Thank you", "Hello"] },
@@ -1124,7 +1127,7 @@ const gens: Record<string, Gen> = {
       answer: it.a,
       input: "choice",
       choices: shuffle(r, it.c),
-      hints: ["まいにち つかう あいさつだよ", `さいしょの文字は「${it.a[0]}」`, `こたえは ${it.a}`],
+      hints: ["まいにち つかう あいさつだよ", `さいしょの[文字|もじ]は「${it.a[0]}」`, `こたえは ${it.a}`],
     };
   },
 
@@ -1134,21 +1137,21 @@ const gens: Record<string, Gen> = {
       { q: "I ___ apples.（りんごが すき）", a: "like", c: ["like", "is", "are", "am"] },
       { q: "I ___ a dog.（いぬを かっている）", a: "have", c: ["have", "am", "is", "go"] },
       { q: "I ___ eight years old.（8さいです）", a: "am", c: ["am", "is", "are", "have"] },
-      { q: "This ___ my pen.（これは 私のペンです）", a: "is", c: ["is", "am", "are", "like"] },
+      { q: "This ___ my pen.（これは [私|わたし]のペンです）", a: "is", c: ["is", "am", "are", "like"] },
       { q: "___ you like cats?（ねこが すきですか？）", a: "Do", c: ["Do", "Is", "Am", "Are"] },
-      { q: "What is ___?（これは 何ですか？）", a: "this", c: ["this", "you", "they", "am"] },
-      { q: "She ___ happy.（かの女は うれしそうです）", a: "is", c: ["is", "am", "are", "do"] },
+      { q: "What is ___?（これは [何|なん]ですか？）", a: "this", c: ["this", "you", "they", "am"] },
+      { q: "She ___ happy.（かの[女|じょ]は うれしそうです）", a: "is", c: ["is", "am", "are", "do"] },
       { q: "Let's ___ soccer!（サッカーを しよう！）", a: "play", c: ["play", "is", "eat", "am"] },
-      { q: "I can ___ fast.（はやく 走れる）", a: "run", c: ["run", "am", "is", "like"] },
+      { q: "I can ___ fast.（はやく [走|はし]れる）", a: "run", c: ["run", "am", "is", "like"] },
       { q: "I ___ bread for breakfast.（あさごはんに パンを たべる）", a: "eat", c: ["eat", "see", "run", "is"] },
-      { q: "I ___ books every day.（まいにち 本を よむ）", a: "read", c: ["read", "play", "am", "is"] },
-      { q: "He ___ a teacher.（彼は せんせいです）", a: "is", c: ["is", "am", "are", "do"] },
-      { q: "They ___ my friends.（彼らは 私の友だちです）", a: "are", c: ["are", "is", "am", "have"] },
-      { q: "We ___ to school.（私たちは 学校へ 行く）", a: "go", c: ["go", "is", "am", "are"] },
-      { q: "I ___ to drink water.（水を 飲みたい）", a: "want", c: ["want", "is", "am", "play"] },
-      { q: "Can you ___ English?（英語を 話せますか？）", a: "speak", c: ["speak", "eat", "run", "is"] },
-      { q: "It is ___ today.（きょうは 晴れです）", a: "sunny", c: ["sunny", "apple", "book", "dog"] },
-      { q: "I live ___ Japan.（日本に 住んでいます）", a: "in", c: ["in", "on", "at", "to"] },
+      { q: "I ___ books every day.（まいにち [本|ほん]を よむ）", a: "read", c: ["read", "play", "am", "is"] },
+      { q: "He ___ a teacher.（[彼|かれ]は せんせいです）", a: "is", c: ["is", "am", "are", "do"] },
+      { q: "They ___ my friends.（[彼|かれ]らは [私|わたし]の[友|とも]だちです）", a: "are", c: ["are", "is", "am", "have"] },
+      { q: "We ___ to school.（[私|わたし]たちは [学校|がっこう]へ [行|い]く）", a: "go", c: ["go", "is", "am", "are"] },
+      { q: "I ___ to drink water.（[水|みず]を [飲|の]みたい）", a: "want", c: ["want", "is", "am", "play"] },
+      { q: "Can you ___ English?（[英語|えいご]を [話|はな]せますか？）", a: "speak", c: ["speak", "eat", "run", "is"] },
+      { q: "It is ___ today.（きょうは [晴|は]れです）", a: "sunny", c: ["sunny", "apple", "book", "dog"] },
+      { q: "I live ___ Japan.（[日本|にほん]に [住|す]んでいます）", a: "in", c: ["in", "on", "at", "to"] },
     ];
     const it = pick(r, items);
     return {
@@ -1156,7 +1159,7 @@ const gens: Record<string, Gen> = {
       answer: it.a,
       input: "choice",
       choices: shuffle(r, it.c),
-      hints: ["にほんごの いみを かんがえよう", "文のかたちに ちゅうい", `こたえは ${it.a}`],
+      hints: ["にほんごの いみを [考|かんが]えよう", "[文|ぶん]のかたちに ちゅうい", `こたえは ${it.a}`],
     };
   },
 };
@@ -1185,6 +1188,7 @@ export function generate(
     if (p.visual) prob.visual = p.visual;
     if (p.passage) prob.passage = p.passage;
     if (p.choices) prob.choices = p.choices;
+    if (p.noRuby) prob.noRuby = p.noRuby;
 
     lastProb = prob;
     const key = `${prob.prompt}___${prob.answer}___${prob.visual || ""}`;

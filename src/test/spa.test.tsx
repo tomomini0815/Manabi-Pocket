@@ -17,6 +17,7 @@ describe("SPA Router with basepath", () => {
           rubyMode: "ruby",
           avatar: "pocket",
           recommendedLevel: "math-add-1",
+          createdAt: Date.now(),
         },
       ],
       activeChildId: "c1",

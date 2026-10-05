@@ -16,8 +16,8 @@ export type ThinkProblem = {
   prereq: string[];
 };
 
-export const DIFFICULTY_LABEL = ["", "入口", "基礎", "標準", "チャレンジ", "オリンピック級"];
-export const METHOD_TAGS = ["図をかいた", "表にした", "小さい数で試した", "あてはめた", "式にした"];
+export const DIFFICULTY_LABEL = ["", "[入口|いりぐち]", "[基礎|きそ]", "[標準|ひょうじゅん]", "チャレンジ", "オリンピック[級|きゅう]"];
+export const METHOD_TAGS = ["[図|ず]をかいた", "[表|ひょう]にした", "[小|ちい]さい[数|かず]で[試|ため]した", "あてはめた", "[式|しき]にした"];
 
 /** Quality check: every problem must have answer, 3 hints, explanation, ≥2 alt solutions, tag, difficulty. */
 function validate(p: Partial<ThinkProblem>): p is ThinkProblem {
@@ -41,7 +41,7 @@ export function paramProblem(seed: number): ThinkProblem {
     const turtles = heads - cranes;
     const legs = cranes * 2 + turtles * 4;
     return {
-      id: `p-tk-${seed}`, typeTag: "文章題", difficulty: 3,
+      id: `p-tk-${seed}`, typeTag: "[文章題|ぶんしょうだい]", difficulty: 3,
       question: `つると かめが あわせて ${heads}ひき います。あしは ぜんぶで ${legs}ほん。かめは なんびき？`,
       answerType: "number", answer: String(turtles),
       hints: ["ぜんぶ つるだったら あしは なんぼん？", "ひょうに して かめを 1ぴきずつ ふやしてみよう", `ぜんぶ つるだと ${heads * 2}ほん。たりない あしは ${legs - heads * 2}ほん`],
@@ -56,7 +56,7 @@ export function paramProblem(seed: number): ThinkProblem {
     const seq = Array.from({ length: 5 }, (_, i) => start + step * i);
     const ans = start + step * 5;
     return {
-      id: `p-seq-${seed}`, typeTag: "規則性", difficulty: 2,
+      id: `p-seq-${seed}`, typeTag: "[規則性|きそくせい]", difficulty: 2,
       question: `${seq.join("、")}、□ … □に はいる かずは？`,
       answerType: "number", answer: String(ans),
       hints: ["となりどうしの かずを くらべよう", "いくつずつ ふえているかな？", `${step}ずつ ふえているよ`],
@@ -69,7 +69,7 @@ export function paramProblem(seed: number): ThinkProblem {
     const k = 3 + Math.floor(r() * 4);
     const n = k * (2 + Math.floor(r() * 4)) + 1 + Math.floor(r() * (k - 1));
     return {
-      id: `p-rem-${seed}`, typeTag: "数の性質", difficulty: 2,
+      id: `p-rem-${seed}`, typeTag: "[数|かず]の[性質|せいしつ]", difficulty: 2,
       question: `あめが ${n}こ あります。${k}にんで おなじ かずずつ わけると、なんこ あまる？`,
       answerType: "number", answer: String(n % k),
       hints: ["1にん 1こずつ くばっていこう", `${k}こずつ まるで かこんでみよう`, `${k}の だんで ${n}に ちかい かずは？`],
@@ -85,12 +85,12 @@ export function paramProblem(seed: number): ThinkProblem {
     const older = younger + diff;
     const total = older + younger;
     return {
-      id: `p-wasaza-${seed}`, typeTag: "文章題", difficulty: 3,
-      question: `あにと おとうとで カードを あわせて ${total}まい 持っています。あには おとうとより ${diff}まい 多く持っています。あには なんまい 持っている？`,
+      id: `p-wasaza-${seed}`, typeTag: "[文章題|ぶんしょうだい]", difficulty: 3,
+      question: `あにと おとうとで カードを あわせて ${total}まい [持|も]っています。あには おとうとより ${diff}まい [多|おお]く[持|も]っています。あには なんまい [持|も]っている？`,
       answerType: "number", answer: String(older),
-      hints: ["2人のカードの せんぶんずを かいてみよう", `あにの多い ${diff}まいを 先にひくと、残りは 2人同じ枚数になるよ`, `合計${total} から ${diff}をひいて 2でわると…？`],
-      explanation: `全体の合計から差をひくと ${total} − ${diff} ＝ ${total - diff}まい。これを2人で分けると弟は ${(total - diff) / 2}まい。兄はこれに ${diff}まい足して ${older}まい。`,
-      altSolutions: [`はじめから差を足す解法：(${total} + ${diff}) ÷ 2 = ${older}まい`, "弟の枚数を適当にあてはめて試す：弟5枚なら兄" + (5 + diff) + "枚で合計" + (10 + diff) + "枚…と調整する"],
+      hints: ["2[人|り]のカードの [線分図|せんぶんず]を かいてみよう", `あにの[多|おお]い ${diff}まいを [先|さき]にひくと、[残|のこ]りは 2[人|り][同|おな]じ[枚数|まいすう]になるよ`, `[合計|ごうけい]${total} から ${diff}をひいて 2でわると…？`],
+      explanation: `[全体|ぜんたい]の[合計|ごうけい]から[差|さ]をひくと ${total} − ${diff} ＝ ${total - diff}まい。これを2[人|り]で[分|わ]けると[弟|おとうと]は ${(total - diff) / 2}まい。[兄|あに]はこれに ${diff}まい[足|た]して ${older}まい。`,
+      altSolutions: [`はじめから[差|さ]を[足|た]す[解法|かいほう]：(${total} + ${diff}) ÷ 2 = ${older}まい`, "[弟|おとうと]の[枚数|まいすう]を[適当|てきとう]にあてはめて[試|ため]す：[弟|おとうと]5[枚|まい]なら[兄|あに]" + (5 + diff) + "[枚|まい]で[合計|ごうけい]" + (10 + diff) + "[枚|まい]…と[調整|ちょうせい]する"],
       prereq: ["math-add-1/s02", "math-sub-1/s01", "math-div/s01"],
     };
   }
@@ -100,12 +100,12 @@ export function paramProblem(seed: number): ThinkProblem {
     const ansDigit = 2 + Math.floor(r() * 7); // 2..8
     const total = mult * ansDigit;
     return {
-      id: `p-mushimul-${seed}`, typeTag: "数の性質", difficulty: 3,
+      id: `p-mushimul-${seed}`, typeTag: "[数|かず]の[性質|せいしつ]", difficulty: 3,
       question: `□ × ${mult} ＝ ${total} です。□に はいる 1けたの かずは なに？`,
       answerType: "number", answer: String(ansDigit),
-      hints: [`${mult}の段の 九九を さいしょから 言ってみよう！`, `一の位が「${total % 10}」に なる 九九は どれかな？`, `${mult} × ${ansDigit} ＝ ${total} だね！`],
-      explanation: `${total} ÷ ${mult} ＝ ${ansDigit} です。九九の${mult}の段で、答えが${total}になるのは「${ansDigit}」です。`,
-      altSolutions: [`九九を1から順に唱える：${mult}×1=${mult}, … , ${mult}×${ansDigit}=${total}`, `わり算で逆算する：${total} ÷ ${mult} = ${ansDigit}`],
+      hints: [`${mult}の[段|だん]の [九九|くく]を さいしょから [言|い]ってみよう！`, `[一|いち]の[位|くらい]が「${total % 10}」に なる [九九|くく]は どれかな？`, `${mult} × ${ansDigit} ＝ ${total} だね！`],
+      explanation: `${total} ÷ ${mult} ＝ ${ansDigit} です。[九九|くく]の${mult}の[段|だん]で、[答|こた]えが${total}になるのは「${ansDigit}」です。`,
+      altSolutions: [`[九九|くく]を1から[順|じゅん]に[唱|とな]える：${mult}×1=${mult}, … , ${mult}×${ansDigit}=${total}`, `わり[算|ざん]で[逆算|ぎゃくさん]する：${total} ÷ ${mult} = ${ansDigit}`],
       prereq: ["math-mul/s02"],
     };
   }
@@ -114,12 +114,12 @@ export function paramProblem(seed: number): ThinkProblem {
   const initialYounger = 4 + Math.floor(r() * 6);
   const initialOlder = initialYounger + give * 2;
   return {
-    id: `p-trans-${seed}`, typeTag: "文章題", difficulty: 3,
-    question: `あには ${initialOlder}こ、おとうとは ${initialYounger}こ の おはじきを 持っています。あにが おとうとに なんこ あげると、2人の持っている数は 同じになる？`,
+    id: `p-trans-${seed}`, typeTag: "[文章題|ぶんしょうだい]", difficulty: 3,
+    question: `あには ${initialOlder}こ、おとうとは ${initialYounger}こ の おはじきを [持|も]っています。あにが おとうとに なんこ あげると、2[人|り]の[持|も]っている[数|かず]は [同|おな]じになる？`,
     answerType: "number", answer: String(give),
-    hints: ["いまの 2人の「差」は なんこ あるかな？", `差は ${initialOlder} − ${initialYounger} ＝ ${give * 2}こ だね`, `その差の「半分」をあげると、ちょうど同じになるよ！`],
-    explanation: `いまの差は ${initialOlder} − ${initialYounger} ＝ ${give * 2}こ です。兄から渡したぶん兄が減り弟が増えるので、差の半分の ${give * 2} ÷ 2 ＝ ${give}こ をあげれば同じになります。`,
-    altSolutions: [`あげたあとの個数を考える：全体の合計は ${initialOlder + initialYounger}こ。同じになると1人 ${(initialOlder + initialYounger) / 2}こ だから、${initialOlder} − ${(initialOlder + initialYounger) / 2} ＝ ${give}こ`, "1個ずつ渡すシミュレーションをノートに書いて確かめる"],
+    hints: ["いまの 2[人|り]の「[差|さ]」は なんこ あるかな？", `[差|さ]は ${initialOlder} − ${initialYounger} ＝ ${give * 2}こ だね`, `その[差|さ]の「[半分|はんぶん]」をあげると、ちょうど[同|おな]じになるよ！`],
+    explanation: `いまの[差|さ]は ${initialOlder} − ${initialYounger} ＝ ${give * 2}こ です。[兄|あに]から[渡|わた]したぶん[兄|あに]が[減|へ]り[弟|おとうと]が[増|ふ]えるので、[差|さ]の[半分|はんぶん]の ${give * 2} ÷ 2 ＝ ${give}こ をあげれば[同|おな]じになります。`,
+    altSolutions: [`あげたあとの[個数|こすう]を[考|かんが]える：[全体|ぜんたい]の[合計|ごうけい]は ${initialOlder + initialYounger}こ。[同|おな]じになると1[人|り] ${(initialOlder + initialYounger) / 2}こ だから、${initialOlder} − ${(initialOlder + initialYounger) / 2} ＝ ${give}こ`, "1[個|こ]ずつ[渡|わた]すシミュレーションをノートに[書|か]いて[確|たし]かめる"],
     prereq: ["math-sub-1/s01", "math-div/s01"],
   };
 }

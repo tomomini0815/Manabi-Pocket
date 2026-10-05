@@ -40,33 +40,41 @@ function Home() {
   return (
     <KidShell
       header={
-        <div className="clay-card !rounded-2xl !py-1.5 sm:!py-2 !px-4 sm:!px-5 inline-flex items-baseline gap-1.5 sm:gap-2 bg-gradient-to-r from-[#fffaf7] via-white to-[#fff4ee] border-2 border-white shadow-[0_4px_14px_rgba(234,99,64,0.08)]">
-          <span className="text-lg sm:text-xl font-black text-foreground/75 tracking-tight">こんにちは、</span>
-          <span className="text-xl sm:text-2xl font-black text-primary-dark tracking-tight">{child.nickname}</span>
-          <span className="text-sm sm:text-base font-extrabold text-[#9c5938]">さん</span>
+        <div className="clay-card !rounded-2xl !py-1 sm:!py-1.5 !px-3 sm:!px-4 flex flex-col justify-center bg-gradient-to-r from-[#fffaf7] via-white to-[#fff4ee] border-2 border-white shadow-[0_4px_14px_rgba(234,99,64,0.08)]">
+          <span className="text-xs sm:text-sm font-black text-foreground/75 tracking-tight leading-tight">
+            こんにちは、
+          </span>
+          <div className="flex items-baseline gap-1 leading-tight">
+            <span className="text-base sm:text-xl font-black text-primary-dark tracking-tight truncate max-w-[130px] sm:max-w-none">
+              {child.nickname}
+            </span>
+            <span className="text-xs sm:text-sm font-extrabold text-[#9c5938]">
+              さん
+            </span>
+          </div>
         </div>
       }
     >
-      {/* 連続日数 & ポケットの成長ステータス（超立体クレイコンビ） */}
-      <div className="flex items-center gap-4">
-        <div className="clay-card p-3 flex items-center justify-center shrink-0">
-          <Pocket stage={stage} size={96} />
+      {/* 連続日数 & ポケットの成長ステータス（モバイルでも右余白をしっかり確保） */}
+      <div className="flex items-center gap-2.5 sm:gap-4 w-full">
+        <div className="clay-card p-2 sm:p-3 flex items-center justify-center shrink-0">
+          <Pocket stage={stage} size={76} />
         </div>
-        <div className="clay-card-yellow flex flex-1 items-center gap-4 p-5">
-          <div className="clay-tile-peach size-14 shrink-0">
-            <Flame className="size-8 text-white" aria-hidden />
+        <div className="clay-card-yellow flex flex-1 min-w-0 items-center gap-2.5 sm:gap-4 p-3 sm:p-5">
+          <div className="clay-tile-peach size-11 sm:size-14 shrink-0 flex items-center justify-center">
+            <Flame className="size-6 sm:size-8 text-white" aria-hidden />
           </div>
-          <div>
-            <p className="text-3xl font-black text-[#523b0d]">
-              {streak}<span className="text-lg font-extrabold text-[#7a5e20] ml-1">日れんぞく</span>
+          <div className="min-w-0">
+            <p className="text-xl sm:text-3xl font-black text-[#523b0d] truncate leading-tight">
+              {streak}<span className="text-sm sm:text-lg font-extrabold text-[#7a5e20] ml-1">日れんぞく</span>
             </p>
-            <div className="mt-1.5 flex gap-1.5" aria-label={`きょうの スタンプ ${Math.min(today, 5)}こ`}>
+            <div className="mt-1 flex gap-1 sm:gap-1.5" aria-label={`きょうの スタンプ ${Math.min(today, 5)}こ`}>
               {Array.from({ length: 5 }).map((_, i) => (
                 <span
                   key={i}
-                  className={`size-5 rounded-full transition-all ${
+                  className={`size-4 sm:size-5 rounded-full transition-all ${
                     i < today
-                      ? "clay-tile-peach !size-5.5 scale-110 !rounded-full shadow-[0_4px_8px_rgba(215,85,50,0.4)]"
+                      ? "clay-tile-peach !size-4.5 sm:!size-5.5 scale-110 !rounded-full shadow-[0_4px_8px_rgba(215,85,50,0.4)]"
                       : "clay-inset bg-[#e5dbc9] !rounded-full"
                   }`}
                 />
