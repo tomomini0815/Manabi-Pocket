@@ -8,6 +8,7 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
+    "build:pages": "vite build --config vite.config.spa.ts && node scripts/prepare-pages.mjs",
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "vitest run",

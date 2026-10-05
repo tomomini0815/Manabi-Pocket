@@ -35,11 +35,8 @@ jobs:
       - name: Run tests
         run: npm test
 
-      - name: Build application
-        run: npm run build
-
-      - name: Prepare GitHub Pages artifacts
-        run: node scripts/prepare-pages.mjs
+      - name: Build application for GitHub Pages
+        run: npm run build:pages
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -47,7 +44,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ".output/public"
+          path: "dist"
 
       - name: Deploy to GitHub Pages
         id: deployment

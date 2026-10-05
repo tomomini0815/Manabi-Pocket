@@ -85,6 +85,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  // ブラウザ環境（クライアントサイド）では、すでに静的 HTML（<html>, <head>, <body>）が存在するため
+  // 二重タグの生成を防ぎ children のみを描画
+  if (typeof window !== "undefined") {
+    return <>{children}</>;
+  }
+
   return (
     <html lang="ja">
       <head>
