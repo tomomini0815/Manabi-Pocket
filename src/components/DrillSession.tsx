@@ -105,33 +105,33 @@ export function DrillSession({ title, color, total, targetSec, stage, makeProble
   const dots = useMemo(() => Array.from({ length: total }), [total]);
 
   return (
-    <div className="min-h-dvh w-full bg-[#f5efe6] text-foreground flex flex-col justify-start px-4 pt-3 pb-6 sm:px-6 sm:pt-4 sm:pb-8 select-none">
+    <div className="min-h-dvh md:h-dvh md:max-h-dvh w-full bg-[#f5efe6] text-foreground flex flex-col justify-start px-3 pt-2 pb-3.5 sm:px-6 sm:pt-3.5 sm:pb-5 select-none overflow-y-auto md:overflow-hidden">
       {state === "correct" && <Confetti />}
 
-      <div className="mx-auto w-full max-w-3xl flex flex-col gap-2.5 sm:gap-3">
+      <div className="mx-auto w-full max-w-3xl flex flex-col gap-2 sm:gap-2.5 my-auto">
         {/* トップヘッダー（立体粘土バー ＆ ビーズプログレス） */}
         <header className="w-full shrink-0">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-3">
             <button
               type="button"
               onClick={onQuit}
-              className="tap clay-tile-white size-10 sm:size-11 !rounded-2xl transition-transform hover:scale-105 active:scale-95"
+              className="tap clay-tile-white size-9 sm:size-10 !rounded-2xl transition-transform hover:scale-105 active:scale-95"
               aria-label="やめる"
             >
-              <X className="size-5 sm:size-6 text-muted-foreground" />
+              <X className="size-5 text-muted-foreground" />
             </button>
 
             {/* 10問の立体粘土ビーズ（Clay Beads） */}
-            <div className="flex flex-1 items-center justify-center gap-1.5 sm:gap-2 px-2" aria-label={`あと ${total - index} もん`}>
+            <div className="flex flex-1 items-center justify-center gap-1 sm:gap-1.5 px-2" aria-label={`あと ${total - index} もん`}>
               {dots.map((_, i) => (
                 <span
                   key={i}
                   className={`transition-all duration-300 ${
                     i < index
-                      ? "clay-tile-mint !size-3 sm:!size-3.5 !rounded-full shadow-[0_2px_4px_rgba(95,145,125,0.4)]"
+                      ? "clay-tile-mint !size-2.5 sm:!size-3 !rounded-full shadow-[0_2px_4px_rgba(95,145,125,0.4)]"
                       : i === index
-                      ? "clay-tile-peach !size-4 sm:!size-4.5 !rounded-full scale-125 animate-pulse shadow-[0_4px_8px_rgba(215,85,50,0.5)]"
-                      : "clay-inset !size-2.5 sm:!size-3 !rounded-full bg-[#e3dcd1]"
+                      ? "clay-tile-peach !size-3.5 sm:!size-4 !rounded-full scale-125 animate-pulse shadow-[0_4px_8px_rgba(215,85,50,0.5)]"
+                      : "clay-inset !size-2 sm:!size-2.5 !rounded-full bg-[#e3dcd1]"
                   }`}
                 />
               ))}
@@ -143,12 +143,12 @@ export function DrillSession({ title, color, total, targetSec, stage, makeProble
           </div>
 
           {/* サブタイトル ＆ タイマー */}
-          <div className="mt-1.5 flex items-center justify-between gap-2 px-1">
+          <div className="mt-1 flex items-center justify-between gap-2 px-1">
             <p className="text-xs font-extrabold text-muted-foreground truncate">
               {title}
             </p>
             {targetSec && (
-              <span className="clay-badge text-[11px] font-black bg-muted/60 text-muted-foreground shrink-0 !py-0.5 !px-2.5">
+              <span className="clay-badge text-[10px] sm:text-[11px] font-black bg-muted/60 text-muted-foreground shrink-0 !py-0.5 !px-2">
                 ⏱ {elapsed}秒 / 目安{Math.floor(targetSec / 60)}分
               </span>
             )}
@@ -158,10 +158,10 @@ export function DrillSession({ title, color, total, targetSec, stage, makeProble
         {/* メイン問題カード（超立体アイボリー粘土スレート） */}
         <section
           key={index}
-          className="clay-card animate-slide-in flex flex-col justify-between p-4 sm:p-6 text-center w-full relative min-h-[160px]"
+          className="clay-card animate-slide-in flex flex-col justify-between p-3.5 sm:p-5 text-center w-full relative min-h-[140px] sm:min-h-[150px]"
         >
           {/* カード上部：問題形式バッジ ＆ メモ機能トグル */}
-          <div className="w-full flex items-center justify-between shrink-0 mb-2">
+          <div className="w-full flex items-center justify-between shrink-0 mb-1.5">
             <span className="clay-badge text-[11px] sm:text-xs font-black bg-primary-soft text-primary-dark">
               第 {index + 1} 問
             </span>
@@ -181,9 +181,9 @@ export function DrillSession({ title, color, total, targetSec, stage, makeProble
 
           {/* 筆算・計算・メモ用手書きキャンバス（トグル展開時） */}
           {showMemo && (
-            <div className="w-full my-2 p-2 clay-inset rounded-2xl bg-[#f7f2e9] shrink-0">
+            <div className="w-full my-1.5 p-2 clay-inset rounded-2xl bg-[#f7f2e9] shrink-0">
               <p className="text-[11px] font-bold text-muted-foreground mb-1 text-left">✍️ 画面に指やペンで自由に書けます</p>
-              <DrawCanvas height={130} />
+              <DrawCanvas height={110} />
             </div>
           )}
 
@@ -261,7 +261,7 @@ export function DrillSession({ title, color, total, targetSec, stage, makeProble
                   type="button"
                   disabled={state === "correct" || isWrongChoice}
                   onClick={() => check(c)}
-                  className={`tap min-h-14 sm:min-h-16 px-3 sm:px-4 font-black transition-all flex items-center justify-between gap-2 relative ${
+                  className={`tap min-h-13 sm:min-h-14 md:min-h-15 px-3 sm:px-4 font-black transition-all flex items-center justify-between gap-2 relative ${
                     isCorrectChoice
                       ? "clay-card-mint scale-[1.02] ring-4 ring-correct shadow-[0_12px_24px_rgba(46,168,110,0.35)]"
                       : isWrongChoice

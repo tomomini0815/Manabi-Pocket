@@ -43,18 +43,18 @@ function Think() {
 
   return (
     <div className="min-h-screen bg-[#f5efe6] text-foreground">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 md:px-8 py-4 sm:py-6">
-        <div className="mb-5 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
+      <div className="mx-auto max-w-6xl px-3 sm:px-6 md:px-8 py-2.5 sm:py-3.5 md:py-4">
+        <div className="mb-2 sm:mb-3 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-3">
             <button
               type="button"
-              className="tap clay-tile-white size-10 sm:size-11 !rounded-2xl transition-transform hover:scale-105 active:scale-95"
+              className="tap clay-tile-white size-9 sm:size-10 !rounded-2xl transition-transform hover:scale-105 active:scale-95"
               onClick={() => navigate({ to: "/" })}
               aria-label="やめる"
             >
-              <X className="size-5 sm:size-6 text-muted-foreground" />
+              <X className="size-5 text-muted-foreground" />
             </button>
-            <p className="text-xl sm:text-2xl font-black text-foreground">
+            <p className="text-lg sm:text-xl md:text-2xl font-black text-foreground">
               かんがえる　{Math.min(i + 1, problems.length)} / {problems.length}
             </p>
           </div>
