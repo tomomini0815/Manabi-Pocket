@@ -7,35 +7,94 @@
       "levels": [
         { "id": "math-count", "name": "かずの にんしき", "startGrade": 0, "steps": [
           { "id": "s01", "title": "1〜5を かぞえる", "generator": "count", "params": { "min": 1, "max": 5 }, "targetSec": 120 },
-          { "id": "s02", "title": "1〜10を かぞえる", "generator": "count", "params": { "min": 3, "max": 10 }, "targetSec": 150 }
+          { "id": "s02", "title": "1〜10を かぞえる", "generator": "count", "params": { "min": 3, "max": 10 }, "targetSec": 150 },
+          { "id": "s03", "title": "1〜20を かぞえる", "generator": "count", "params": { "min": 8, "max": 20 }, "targetSec": 180 },
+          { "id": "s04", "title": "おおきい かずくらべ", "generator": "compare", "params": {}, "targetSec": 120 },
+          { "id": "s05", "title": "かずの ならびじゅん", "generator": "order", "params": {}, "targetSec": 150 }
         ]},
-        { "id": "math-add-1", "name": "たしざん 1", "startGrade": 1, "steps": [
-          { "id": "s01", "title": "1+1〜5+5", "generator": "add", "params": { "min": 1, "max": 5, "carry": false }, "targetSec": 120 },
-          { "id": "s02", "title": "こたえが10まで", "generator": "add", "params": { "min": 1, "max": 9, "carry": false, "sumMax": 10 }, "targetSec": 120 },
-          { "id": "s03", "title": "くりあがり", "generator": "add", "params": { "min": 2, "max": 9, "carry": true }, "targetSec": 150 }
+        { "id": "math-add-1", "name": "たしざん 1（きそ）", "startGrade": 1, "steps": [
+          { "id": "s01", "title": "1を たす", "generator": "add", "params": { "min": 1, "max": 10, "plus": 1 }, "targetSec": 90 },
+          { "id": "s02", "title": "2を たす", "generator": "add", "params": { "min": 1, "max": 10, "plus": 2 }, "targetSec": 90 },
+          { "id": "s03", "title": "5までの たしざん", "generator": "add", "params": { "min": 1, "max": 4, "carry": false, "sumMax": 5 }, "targetSec": 120 },
+          { "id": "s04", "title": "10のまとまり（ほすう）", "generator": "makeTen", "params": {}, "targetSec": 120 },
+          { "id": "s05", "title": "こたえが10まで", "generator": "add", "params": { "min": 1, "max": 9, "carry": false, "sumMax": 10 }, "targetSec": 120 },
+          { "id": "s06", "title": "くりあがり にゅうもん", "generator": "add", "params": { "min": 7, "max": 9, "carry": true }, "targetSec": 150 },
+          { "id": "s07", "title": "くりあがり まとめ", "generator": "add", "params": { "min": 2, "max": 9, "carry": true }, "targetSec": 150 }
         ]},
-        { "id": "math-sub-1", "name": "ひきざん 1", "startGrade": 2, "steps": [
-          { "id": "s01", "title": "10までの ひきざん", "generator": "sub", "params": { "min": 1, "max": 10, "borrow": false }, "targetSec": 120 },
-          { "id": "s02", "title": "くりさがり", "generator": "sub", "params": { "min": 11, "max": 18, "borrow": true }, "targetSec": 150 }
+        { "id": "math-sub-1", "name": "ひきざん 1（きそ）", "startGrade": 1, "steps": [
+          { "id": "s01", "title": "1を ひく", "generator": "sub", "params": { "min": 2, "max": 11, "minus": 1 }, "targetSec": 90 },
+          { "id": "s02", "title": "2を ひく", "generator": "sub", "params": { "min": 3, "max": 12, "minus": 2 }, "targetSec": 90 },
+          { "id": "s03", "title": "5までの ひきざん", "generator": "sub", "params": { "min": 1, "max": 5, "borrow": false }, "targetSec": 120 },
+          { "id": "s04", "title": "10から ひく", "generator": "sub", "params": { "min": 10, "max": 10, "borrow": false }, "targetSec": 120 },
+          { "id": "s05", "title": "10までの ひきざん", "generator": "sub", "params": { "min": 1, "max": 10, "borrow": false }, "targetSec": 120 },
+          { "id": "s06", "title": "くりさがり にゅうもん", "generator": "sub", "params": { "min": 11, "max": 15, "borrow": true }, "targetSec": 150 },
+          { "id": "s07", "title": "くりさがり まとめ", "generator": "sub", "params": { "min": 11, "max": 18, "borrow": true }, "targetSec": 150 }
         ]},
-        { "id": "math-add-2", "name": "2けたの たしざん・ひきざん", "startGrade": 3, "steps": [
-          { "id": "s01", "title": "2けた+1けた", "generator": "add", "params": { "min": 10, "max": 89, "bMax": 9, "carry": true }, "targetSec": 180 },
-          { "id": "s02", "title": "2けた+2けた", "generator": "add", "params": { "min": 10, "max": 49, "carry": true }, "targetSec": 210 },
-          { "id": "s03", "title": "2けた-2けた", "generator": "sub", "params": { "min": 20, "max": 99, "borrow": true, "twoDigit": true }, "targetSec": 210 }
+        { "id": "math-add-2", "name": "2けたの たしざん・ひきざん", "startGrade": 2, "steps": [
+          { "id": "s01", "title": "2けた+1けた（くりあがりなし）", "generator": "add", "params": { "min": 11, "max": 79, "bMax": 5, "carry": false }, "targetSec": 150 },
+          { "id": "s02", "title": "2けた+1けた（くりあがりあり）", "generator": "add", "params": { "min": 15, "max": 89, "bMax": 9, "carry": true }, "targetSec": 180 },
+          { "id": "s03", "title": "2けた-1けた（くりさがりあり）", "generator": "sub", "params": { "min": 20, "max": 85, "borrow": true }, "targetSec": 180 },
+          { "id": "s04", "title": "2けた+2けた", "generator": "add", "params": { "min": 12, "max": 58, "carry": true }, "targetSec": 210 },
+          { "id": "s05", "title": "2けた-2けた", "generator": "sub", "params": { "min": 25, "max": 99, "borrow": true, "twoDigit": true }, "targetSec": 210 }
         ]},
-        { "id": "math-mul", "name": "かけざん（九九）", "startGrade": 4, "steps": [
+        { "id": "math-mul", "name": "かけざん（九九）", "startGrade": 2, "steps": [
           { "id": "s01", "title": "2・5のだん", "generator": "mul", "params": { "tables": [2, 5] }, "targetSec": 120 },
           { "id": "s02", "title": "3・4のだん", "generator": "mul", "params": { "tables": [3, 4] }, "targetSec": 120 },
           { "id": "s03", "title": "6・7のだん", "generator": "mul", "params": { "tables": [6, 7] }, "targetSec": 150 },
-          { "id": "s04", "title": "8・9のだん", "generator": "mul", "params": { "tables": [8, 9] }, "targetSec": 150 }
+          { "id": "s04", "title": "8・9のだん", "generator": "mul", "params": { "tables": [8, 9] }, "targetSec": 150 },
+          { "id": "s05", "title": "0と1と10のかけ算", "generator": "mul", "params": { "zeroOne": true }, "targetSec": 120 },
+          { "id": "s06", "title": "九九まとめ", "generator": "mul", "params": { "tables": [2, 3, 4, 5, 6, 7, 8, 9] }, "targetSec": 180 }
         ]},
-        { "id": "math-div", "name": "わりざん", "startGrade": 5, "steps": [
-          { "id": "s01", "title": "九九で わる", "generator": "div", "params": { "tables": [2, 3, 4, 5] }, "targetSec": 150 },
-          { "id": "s02", "title": "いろいろな わりざん", "generator": "div", "params": { "tables": [6, 7, 8, 9] }, "targetSec": 180 }
+        { "id": "math-div", "name": "わりざん", "startGrade": 3, "steps": [
+          { "id": "s01", "title": "2・3・4・5で わる", "generator": "div", "params": { "tables": [2, 3, 4, 5] }, "targetSec": 150 },
+          { "id": "s02", "title": "6・7・8・9で わる", "generator": "div", "params": { "tables": [6, 7, 8, 9] }, "targetSec": 180 },
+          { "id": "s03", "title": "あまりのある わり算（きそ）", "generator": "div", "params": { "tables": [2, 3, 4, 5], "remainder": true }, "targetSec": 180 },
+          { "id": "s04", "title": "あまりのある わり算（はってん）", "generator": "div", "params": { "tables": [6, 7, 8, 9], "remainder": true }, "targetSec": 210 }
         ]},
-        { "id": "math-frac", "name": "分数・小数", "startGrade": 6, "steps": [
+        { "id": "math-frac", "name": "分数・小数", "startGrade": 4, "steps": [
           { "id": "s01", "title": "同じ分母の たし算", "generator": "frac", "params": { "dens": [3, 4, 5, 6, 8] }, "targetSec": 180 },
-          { "id": "s02", "title": "小数の たし算", "generator": "decimal", "params": { "max": 9 }, "targetSec": 180 }
+          { "id": "s02", "title": "同じ分母の ひき算", "generator": "frac", "params": { "dens": [3, 4, 5, 6, 8], "op": "sub" }, "targetSec": 180 },
+          { "id": "s03", "title": "小数の たし算", "generator": "decimal", "params": { "max": 9 }, "targetSec": 180 },
+          { "id": "s04", "title": "小数の ひき算", "generator": "decimal", "params": { "op": "sub" }, "targetSec": 180 }
+        ]},
+        { "id": "math-k11", "name": "算数検定11級（小学1年）", "startGrade": 1, "steps": [
+          { "id": "s01", "title": "10の補数とたし算", "generator": "makeTen", "params": {}, "targetSec": 120 },
+          { "id": "s02", "title": "くり上がりのあるたし算", "generator": "add", "params": { "min": 6, "max": 9, "carry": true }, "targetSec": 150 },
+          { "id": "s03", "title": "くり下がりのあるひき算", "generator": "sub", "params": { "min": 11, "max": 18, "borrow": true }, "targetSec": 150 },
+          { "id": "s04", "title": "とけい（なんじ・なんじはん）", "generator": "clock", "params": { "mode": "read" }, "targetSec": 150 }
+        ]},
+        { "id": "math-k10", "name": "算数検定10級（小学2年）", "startGrade": 2, "steps": [
+          { "id": "s01", "title": "2けたの加減算", "generator": "add", "params": { "min": 15, "max": 75, "carry": true }, "targetSec": 180 },
+          { "id": "s02", "title": "かけ算九九（全段）", "generator": "mul", "params": { "tables": [2, 3, 4, 5, 6, 7, 8, 9] }, "targetSec": 180 },
+          { "id": "s03", "title": "長さの単位（cm・mm）", "generator": "unitConvert", "params": { "kind": "length" }, "targetSec": 150 },
+          { "id": "s04", "title": "かさの単位（L・dL・mL）", "generator": "unitConvert", "params": { "kind": "volume" }, "targetSec": 150 },
+          { "id": "s05", "title": "時間と時こく（何分後）", "generator": "clock", "params": { "mode": "addMin" }, "targetSec": 150 }
+        ]},
+        { "id": "math-k9", "name": "算数検定9級（小学3年）", "startGrade": 3, "steps": [
+          { "id": "s01", "title": "わり算（九九の逆）", "generator": "div", "params": { "tables": [2, 3, 4, 5, 6, 7, 8, 9] }, "targetSec": 180 },
+          { "id": "s02", "title": "あまりのあるわり算", "generator": "div", "params": { "tables": [3, 4, 5, 6, 7, 8], "remainder": true }, "targetSec": 180 },
+          { "id": "s03", "title": "重さの単位（g・kg・t）", "generator": "unitConvert", "params": { "kind": "weight" }, "targetSec": 150 },
+          { "id": "s04", "title": "小数のたし算とひき算", "generator": "decimal", "params": { "max": 9 }, "targetSec": 180 }
+        ]},
+        { "id": "math-k8", "name": "算数検定8級（小学4年）", "startGrade": 4, "steps": [
+          { "id": "s01", "title": "がい数と四捨五入", "generator": "roundNumber", "params": {}, "targetSec": 150 },
+          { "id": "s02", "title": "小数×整数・小数÷整数", "generator": "decimalMulDiv", "params": { "op": "mul" }, "targetSec": 180 },
+          { "id": "s03", "title": "長方形と正方形の面積", "generator": "geometry", "params": { "kind": "rectArea" }, "targetSec": 180 },
+          { "id": "s04", "title": "異分母分数のたし算", "generator": "fracAdvanced", "params": { "mode": "addDiff" }, "targetSec": 180 }
+        ]},
+        { "id": "math-k7", "name": "算数検定7級（小学5年）", "startGrade": 5, "steps": [
+          { "id": "s01", "title": "小数のかけ算（小数×小数）", "generator": "decimalMulDiv", "params": { "mode": "decDec" }, "targetSec": 180 },
+          { "id": "s02", "title": "分数の通分とひき算", "generator": "fracAdvanced", "params": { "mode": "subDiff" }, "targetSec": 180 },
+          { "id": "s03", "title": "約分と既約分数", "generator": "fracAdvanced", "params": { "mode": "simplify" }, "targetSec": 150 },
+          { "id": "s04", "title": "直方体と立方体の体積", "generator": "geometry", "params": { "kind": "cubeVolume" }, "targetSec": 180 },
+          { "id": "s05", "title": "割合と百分率（％・割）", "generator": "percent", "params": {}, "targetSec": 180 }
+        ]},
+        { "id": "math-k6", "name": "算数検定6級（小学6年・修了）", "startGrade": 6, "steps": [
+          { "id": "s01", "title": "分数のかけ算とわり算", "generator": "fracAdvanced", "params": { "mode": "mul" }, "targetSec": 180 },
+          { "id": "s02", "title": "比と比の値", "generator": "ratio", "params": {}, "targetSec": 150 },
+          { "id": "s03", "title": "速さ・道のり・時間", "generator": "speed", "params": {}, "targetSec": 180 },
+          { "id": "s04", "title": "円の面積（3.14）", "generator": "geometry", "params": { "kind": "circleArea" }, "targetSec": 180 },
+          { "id": "s05", "title": "文字と式（xの逆算）", "generator": "equation", "params": {}, "targetSec": 150 }
         ]}
       ]
     },
@@ -46,21 +105,26 @@
       "levels": [
         { "id": "ja-hira", "name": "ひらがな", "startGrade": 0, "steps": [
           { "id": "s01", "title": "さいしょの もじ", "generator": "kanaFirst", "params": {}, "targetSec": 150 },
-          { "id": "s02", "title": "かいてみよう", "generator": "write", "params": { "set": "hira" }, "targetSec": 300 }
+          { "id": "s02", "title": "ひらがなを かいてみよう", "generator": "write", "params": { "set": "hira" }, "targetSec": 300 }
         ]},
-        { "id": "ja-kata", "name": "カタカナ", "startGrade": 2, "steps": [
+        { "id": "ja-kata", "name": "カタカナ", "startGrade": 1, "steps": [
           { "id": "s01", "title": "ひらがな→カタカナ", "generator": "katakana", "params": {}, "targetSec": 150 },
-          { "id": "s02", "title": "カタカナを かこう", "generator": "write", "params": { "set": "kata" }, "targetSec": 300 }
+          { "id": "s02", "title": "カタカナ→ひらがな", "generator": "katakana", "params": { "reverse": true }, "targetSec": 150 },
+          { "id": "s03", "title": "カタカナを かこう", "generator": "write", "params": { "set": "kata" }, "targetSec": 300 }
         ]},
-        { "id": "ja-vocab", "name": "ことば", "startGrade": 2, "steps": [
-          { "id": "s01", "title": "はんたいの ことば", "generator": "opposite", "params": {}, "targetSec": 150 }
+        { "id": "ja-vocab", "name": "ことばの きまり", "startGrade": 1, "steps": [
+          { "id": "s01", "title": "はんたいの ことば", "generator": "opposite", "params": {}, "targetSec": 150 },
+          { "id": "s02", "title": "なかまの ことば", "generator": "wordGroup", "params": {}, "targetSec": 150 },
+          { "id": "s03", "title": "ただしい 助詞（は・を・へ・が・に）", "generator": "josh", "params": {}, "targetSec": 150 }
         ]},
-        { "id": "ja-kanji", "name": "かんじの よみ", "startGrade": 3, "steps": [
+        { "id": "ja-kanji", "name": "かんじの よみ", "startGrade": 2, "steps": [
           { "id": "s01", "title": "1年の かんじ", "generator": "kanji", "params": { "set": 1 }, "targetSec": 150 },
-          { "id": "s02", "title": "2年の かんじ", "generator": "kanji", "params": { "set": 2 }, "targetSec": 150 }
+          { "id": "s02", "title": "2年の かんじ", "generator": "kanji", "params": { "set": 2 }, "targetSec": 150 },
+          { "id": "s03", "title": "3年の かんじ", "generator": "kanji", "params": { "set": 3 }, "targetSec": 180 },
+          { "id": "s04", "title": "4年の かんじ", "generator": "kanji", "params": { "set": 4 }, "targetSec": 180 }
         ]},
-        { "id": "ja-read", "name": "みじかい ぶんしょう", "startGrade": 3, "steps": [
-          { "id": "s01", "title": "よんで こたえよう", "generator": "reading", "params": {}, "targetSec": 300 }
+        { "id": "ja-read", "name": "みじかい ぶんしょう（どっかい）", "startGrade": 2, "steps": [
+          { "id": "s01", "title": "よんで こたえよう（たんぶん読解）", "generator": "reading", "params": {}, "targetSec": 300 }
         ]}
       ]
     },
@@ -70,14 +134,116 @@
       "icon": "Aa",
       "levels": [
         { "id": "en-abc", "name": "アルファベット", "startGrade": 1, "steps": [
-          { "id": "s01", "title": "大文字と小文字", "generator": "alphaCase", "params": {}, "targetSec": 120 }
+          { "id": "s01", "title": "大文字と小文字", "generator": "alphaCase", "params": {}, "targetSec": 120 },
+          { "id": "s02", "title": "つぎのアルファベット", "generator": "alphaOrder", "params": {}, "targetSec": 120 }
         ]},
-        { "id": "en-word", "name": "たんご", "startGrade": 2, "steps": [
-          { "id": "s01", "title": "どうぶつ・たべもの", "generator": "engWord", "params": {}, "targetSec": 150 }
+        { "id": "en-word", "name": "たんご・語彙", "startGrade": 2, "steps": [
+          { "id": "s01", "title": "どうぶつ・たべもの", "generator": "engWord", "params": {}, "targetSec": 150 },
+          { "id": "s02", "title": "いろ・かず（色と数）", "generator": "engColorsNumbers", "params": {}, "targetSec": 150 }
         ]},
-        { "id": "en-sentence", "name": "かんたんな ぶん", "startGrade": 4, "steps": [
-          { "id": "s01", "title": "I like / I have", "generator": "engSentence", "params": {}, "targetSec": 180 }
+        { "id": "en-sentence", "name": "かんたんな 会話と文", "startGrade": 3, "steps": [
+          { "id": "s01", "title": "えいごで あいさつ", "generator": "engGreeting", "params": {}, "targetSec": 150 },
+          { "id": "s02", "title": "I like / I have", "generator": "engSentence", "params": {}, "targetSec": 180 }
         ]}
+      ]
+    },
+    {
+      "id": "thinking",
+      "name": "しこうりょく",
+      "icon": "💡",
+      "levels": [
+        {
+          "id": "think-1",
+          "name": "思考力10級（算数ラボ10級 / キッズBEE入門・小1〜2）",
+          "startGrade": 1,
+          "steps": [
+            { "id": "s01", "title": "てんびんと おもさ推理", "generator": "thinking", "params": { "problemId": "t-balances-fruit" }, "targetSec": 300 },
+            { "id": "s02", "title": "おり紙と 穴あけ", "generator": "thinking", "params": { "problemId": "t-origami-hole" }, "targetSec": 300 },
+            { "id": "s03", "title": "コインと はらい方", "generator": "thinking", "params": { "problemId": "t-coins-pay" }, "targetSec": 300 },
+            { "id": "s04", "title": "あわせる・りんごとみかん", "generator": "thinking", "params": { "problemId": "t-apple-orange" }, "targetSec": 300 },
+            { "id": "s05", "title": "つみきの段数かぞえ", "generator": "thinking", "params": { "problemId": "t-block-cubes-basic" }, "targetSec": 300 },
+            { "id": "s06", "title": "「なんばんめ」と全体の人数", "generator": "thinking", "params": { "problemId": "t-lab10-position" }, "targetSec": 300 },
+            { "id": "s07", "title": "つみきを上から見た図", "generator": "thinking", "params": { "problemId": "t-lab10-cube-top" }, "targetSec": 300 },
+            { "id": "s08", "title": "マークのくり返し規則", "generator": "thinking", "params": { "problemId": "t-lab10-pattern-shape" }, "targetSec": 300 }
+          ]
+        },
+        {
+          "id": "think-2",
+          "name": "思考力9級（算数ラボ9級 / キッズBEE基礎・小3）",
+          "startGrade": 2,
+          "steps": [
+            { "id": "s01", "title": "サイコロの 目の合計", "generator": "thinking", "params": { "problemId": "t-dice-sum" }, "targetSec": 300 },
+            { "id": "s02", "title": "ならべかえと じゅけいず", "generator": "thinking", "params": { "problemId": "t-line3" }, "targetSec": 300 },
+            { "id": "s03", "title": "かけっこの じゅんばん推理", "generator": "thinking", "params": { "problemId": "t-race" }, "targetSec": 300 },
+            { "id": "s04", "title": "しんごう機の 周期", "generator": "thinking", "params": { "problemId": "t-traffic-light" }, "targetSec": 300 },
+            { "id": "s05", "title": "植木算のひらめき", "generator": "thinking", "params": { "problemId": "t-ueki-trees" }, "targetSec": 300 },
+            { "id": "s06", "title": "池のまわりの植木算", "generator": "thinking", "params": { "problemId": "t-lab9-ring-ueki" }, "targetSec": 300 },
+            { "id": "s07", "title": "テープののりしろ・重なり算", "generator": "thinking", "params": { "problemId": "t-lab9-tape-overlap" }, "targetSec": 300 },
+            { "id": "s08", "title": "3×3の魔法陣の中心", "generator": "thinking", "params": { "problemId": "t-lab9-magic-nine" }, "targetSec": 300 }
+          ]
+        },
+        {
+          "id": "think-3",
+          "name": "思考力8級（算数ラボ8級 / キッズBEE決勝・小4）",
+          "startGrade": 3,
+          "steps": [
+            { "id": "s01", "title": "重なる輪の まほうじん", "generator": "thinking", "params": { "problemId": "t-magic-circle" }, "targetSec": 400 },
+            { "id": "s02", "title": "ふくめん算と 九九の積", "generator": "thinking", "params": { "problemId": "t-fukumen-add" }, "targetSec": 400 },
+            { "id": "s03", "title": "サイコロの 転がり推理", "generator": "thinking", "params": { "problemId": "t-dice-roll" }, "targetSec": 400 },
+            { "id": "s04", "title": "三角形の かぞえあげ", "generator": "thinking", "params": { "problemId": "t-triangle-count" }, "targetSec": 400 },
+            { "id": "s05", "title": "つみきの 見取り図（最小個数）", "generator": "thinking", "params": { "problemId": "t-block-cubes" }, "targetSec": 400 },
+            { "id": "s06", "title": "うそつき推理（3人の発言）", "generator": "thinking", "params": { "problemId": "t-liar-3" }, "targetSec": 400 },
+            { "id": "s07", "title": "正方形の いれこ面積", "generator": "thinking", "params": { "problemId": "t-tangram-area" }, "targetSec": 400 },
+            { "id": "s08", "title": "かいだんと フィボナッチ規則", "generator": "thinking", "params": { "problemId": "t-fibonacci-step" }, "targetSec": 400 },
+            { "id": "s09", "title": "和差算の思考パズル", "generator": "thinking", "params": { "problemId": "t-lab8-wasazan" }, "targetSec": 400 },
+            { "id": "s10", "title": "重ねたサイコロの隠れた面", "generator": "thinking", "params": { "problemId": "t-lab8-dice-stack" }, "targetSec": 400 },
+            { "id": "s11", "title": "集合算・重なりの推理", "generator": "thinking", "params": { "problemId": "t-lab8-venn-pets" }, "targetSec": 400 }
+          ]
+        },
+        {
+          "id": "think-4",
+          "name": "思考力7級（算数ラボ7級 / ジュニア算オリ基礎・小5）",
+          "startGrade": 4,
+          "steps": [
+            { "id": "s01", "title": "格子の 最短ルート（パスカル加算）", "generator": "thinking", "params": { "problemId": "t-grid-path" }, "targetSec": 450 },
+            { "id": "s02", "title": "カレンダーと 曜日の推理", "generator": "thinking", "params": { "problemId": "t-calendar-tue" }, "targetSec": 450 },
+            { "id": "s03", "title": "立方体の ペンキぬりと切断", "generator": "thinking", "params": { "problemId": "t-paint-cube" }, "targetSec": 450 },
+            { "id": "s04", "title": "カードのかけ算 最大値パズル", "generator": "thinking", "params": { "problemId": "t-card-comb-max" }, "targetSec": 450 },
+            { "id": "s05", "title": "リーグ戦の 対戦数推理", "generator": "thinking", "params": { "problemId": "t-tournament" }, "targetSec": 450 },
+            { "id": "s06", "title": "つるかめ算の思考パズル", "generator": "thinking", "params": { "problemId": "t-tsurukame-puzzle" }, "targetSec": 450 },
+            { "id": "s07", "title": "過不足算（あまりと不足）", "generator": "thinking", "params": { "problemId": "t-lab7-kahusoku" }, "targetSec": 450 },
+            { "id": "s08", "title": "立方体の切断とピース数", "generator": "thinking", "params": { "problemId": "t-lab7-block-cuts" }, "targetSec": 450 },
+            { "id": "s09", "title": "勝ち抜きトーナメントの全試合数", "generator": "thinking", "params": { "problemId": "t-lab7-tournament-games" }, "targetSec": 450 }
+          ]
+        },
+        {
+          "id": "think-6",
+          "name": "思考力6級（算数ラボ6級 / ジュニア算オリ決勝・小6）",
+          "startGrade": 5,
+          "steps": [
+            { "id": "s01", "title": "1から20までの 和の秘密", "generator": "thinking", "params": { "problemId": "t-sum20" }, "targetSec": 480 },
+            { "id": "s02", "title": "方陣算（正方形のまわり）", "generator": "thinking", "params": { "problemId": "t-hojin-stones" }, "targetSec": 480 },
+            { "id": "s03", "title": "正六角形の対角線の本数", "generator": "thinking", "params": { "problemId": "t-polygon-diagonals" }, "targetSec": 480 },
+            { "id": "s04", "title": "仕事算の思考パズル", "generator": "thinking", "params": { "problemId": "t-lab6-work-rate" }, "targetSec": 480 },
+            { "id": "s05", "title": "立方体の3面塗り小立方体", "generator": "thinking", "params": { "problemId": "t-lab6-cube-paint3" }, "targetSec": 480 },
+            { "id": "s06", "title": "累乗の一の位の周期性", "generator": "thinking", "params": { "problemId": "t-lab6-cycle-power" }, "targetSec": 480 },
+            { "id": "s07", "title": "仕切り板によるリンゴの分配", "generator": "thinking", "params": { "problemId": "t-lab6-partitions" }, "targetSec": 480 }
+          ]
+        },
+        {
+          "id": "think-5",
+          "name": "思考力5級（算数ラボ5級・算数オリンピック級 / 最高峰）",
+          "startGrade": 6,
+          "steps": [
+            { "id": "s01", "title": "天秤と ニセモノ金貨（3進法推理）", "generator": "thinking", "params": { "problemId": "t-olympiad-weighing" }, "targetSec": 500 },
+            { "id": "s02", "title": "必勝法ゲーム（ニムと不変量）", "generator": "thinking", "params": { "problemId": "t-olympiad-game-nim" }, "targetSec": 500 },
+            { "id": "s03", "title": "ピザの 平面分割パズル", "generator": "thinking", "params": { "problemId": "t-olympiad-cutting" }, "targetSec": 500 },
+            { "id": "s04", "title": "鳩の巣原理（色のペアリング）", "generator": "thinking", "params": { "problemId": "t-pigeonhole" }, "targetSec": 500 },
+            { "id": "s05", "title": "ロッカーの開閉・平方数と約数", "generator": "thinking", "params": { "problemId": "t-lab5-lockers" }, "targetSec": 500 },
+            { "id": "s06", "title": "正直族と嘘つき族の分岐路", "generator": "thinking", "params": { "problemId": "t-lab5-logic-island" }, "targetSec": 500 },
+            { "id": "s07", "title": "川渡りパズル・最短往復回数", "generator": "thinking", "params": { "problemId": "t-lab5-boat-crossing" }, "targetSec": 500 }
+          ]
+        }
       ]
     }
   ]

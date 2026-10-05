@@ -13,7 +13,26 @@ export const SUBJECT_COLOR: Record<string, string> = {
   thinking: "var(--thinking)",
 };
 
-export const GRADES = ["年少", "年中", "年長", "小1", "小2", "小3", "小4", "小5", "小6"];
+export const GRADES = ["幼児", "小学1年", "小学2年", "小学3年", "小学4年", "小学5年", "小学6年"] as const;
+export const GRADE_SHORT = ["幼児", "小1", "小2", "小3", "小4", "小5", "小6"] as const;
+export const GRADE_ICONS = ["👶", "🎒", "📘", "📗", "📙", "📕", "🎓"] as const;
+
+export function clampGrade(grade: number): number {
+  if (typeof grade !== "number" || isNaN(grade)) return 1;
+  return Math.min(6, Math.max(0, Math.floor(grade)));
+}
+
+export function gradeLabel(grade: number): string {
+  return GRADES[clampGrade(grade)] ?? "幼児";
+}
+
+export function gradeShort(grade: number): string {
+  return GRADE_SHORT[clampGrade(grade)] ?? "幼児";
+}
+
+export function gradeIcon(grade: number): string {
+  return GRADE_ICONS[clampGrade(grade)] ?? "🎒";
+}
 
 export const stepKey = (levelId: string, stepId: string) => `${levelId}/${stepId}`;
 
@@ -37,6 +56,7 @@ export function findStep(levelId: string, stepId: string) {
 /** Recommended start level for a grade (grade only decides the starting point). */
 export function recommendedLevelFor(grade: number, subjectId = "math") {
   const s = subjects.find((x) => x.id === subjectId) ?? subjects[0]!;
-  const fit = [...s.levels].reverse().find((l) => l.startGrade <= grade);
+  const g = clampGrade(grade);
+  const fit = [...s.levels].reverse().find((l) => l.startGrade <= g);
   return (fit ?? s.levels[0]!).id;
 }

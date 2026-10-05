@@ -42,13 +42,22 @@ function Think() {
   const lastTwoStuck = mine.length >= 2 && mine.slice(-2).every((a) => !a.solved || a.hintLevel >= 3);
 
   return (
-    <div className="min-h-screen bg-think text-think-deep">
-      <div className="mx-auto max-w-3xl px-5 py-5">
-        <div className="mb-6 flex items-center gap-3">
-          <button type="button" className="tap inline-flex items-center justify-center rounded-full bg-surface" onClick={() => navigate({ to: "/" })} aria-label="やめる">
-            <X className="size-6" />
-          </button>
-          <p className="flex-1 text-lg font-bold">かんがえる　{Math.min(i + 1, problems.length)} / {problems.length}</p>
+    <div className="min-h-screen bg-[#f5efe6] text-foreground">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 md:px-8 py-4 sm:py-6">
+        <div className="mb-5 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              className="tap clay-tile-white size-10 sm:size-11 !rounded-2xl transition-transform hover:scale-105 active:scale-95"
+              onClick={() => navigate({ to: "/" })}
+              aria-label="やめる"
+            >
+              <X className="size-5 sm:size-6 text-muted-foreground" />
+            </button>
+            <p className="text-xl sm:text-2xl font-black text-foreground">
+              かんがえる　{Math.min(i + 1, problems.length)} / {problems.length}
+            </p>
+          </div>
           <SoundToggle />
         </div>
 

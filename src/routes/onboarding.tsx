@@ -29,7 +29,7 @@ function Onboarding() {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [name, setName] = useState("");
-  const [grade, setGrade] = useState(3);
+  const [grade, setGrade] = useState(1);
   const [ruby, setRuby] = useState<RubyMode>("ruby");
   const [qi, setQi] = useState(0);
   const [score, setScore] = useState(0);
@@ -46,7 +46,7 @@ function Onboarding() {
   };
 
   const opt = (active: boolean) =>
-    `tap rounded-lg border-2 px-4 py-3 text-lg font-bold ${active ? "border-primary bg-primary-soft text-primary-dark" : "border-input bg-surface"}`;
+    `tap rounded-lg border-2 px-3 py-2.5 text-base sm:text-lg font-bold transition-all ${active ? "border-primary bg-primary-soft text-primary-dark shadow-sm" : "border-input bg-surface hover:border-primary/50"}`;
 
   return (
     <div className="mx-auto flex min-h-screen max-w-xl flex-col items-center px-5 py-10 text-center">
@@ -67,9 +67,11 @@ function Onboarding() {
           </label>
           <fieldset>
             <legend className="text-xl font-bold">がくねん（スタートの めやす）</legend>
-            <div className="mt-2 grid grid-cols-3 gap-2">
+            <div className="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-2">
               {GRADES.map((g, i) => (
-                <button key={g} type="button" className={opt(grade === i)} onClick={() => setGrade(i)} aria-pressed={grade === i}>{g}</button>
+                <button key={g} type="button" className={opt(grade === i)} onClick={() => setGrade(i)} aria-pressed={grade === i}>
+                  {g}
+                </button>
               ))}
             </div>
           </fieldset>

@@ -33,16 +33,36 @@ function Challenge() {
   const solving_p = solving ? findThinking(solving) : null;
 
   return (
-    <div className="min-h-screen bg-think text-think-deep">
-      <div className="mx-auto max-w-3xl px-5 py-5">
-        <div className="mb-6 flex items-center gap-3">
-          {solving_p ? (
-            <button className="tap inline-flex items-center justify-center rounded-full bg-surface" onClick={() => setSolving(null)} aria-label="もどる"><X className="size-6" /></button>
-          ) : (
-            <Link to="/" className="tap inline-flex items-center justify-center rounded-full bg-surface" aria-label="ホームへ"><X className="size-6" /></Link>
-          )}
-          <p className="text-lg font-bold">こんしゅうの チャレンジ</p>
-        </div>
+    <div className="min-h-screen bg-[#f5efe6] text-foreground">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 md:px-8 py-4 sm:py-6">
+        <header className="mb-5 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            {solving_p ? (
+              <button
+                className="tap clay-tile-white size-11 !rounded-2xl transition-transform hover:scale-105 active:scale-95"
+                onClick={() => setSolving(null)}
+                aria-label="もどる"
+              >
+                <X className="size-6 text-muted-foreground" />
+              </button>
+            ) : (
+              <Link
+                to="/"
+                className="tap clay-tile-white size-11 !rounded-2xl transition-transform hover:scale-105 active:scale-95"
+                aria-label="ホームへ"
+              >
+                <X className="size-6 text-muted-foreground" />
+              </Link>
+            )}
+            <div>
+              <p className="text-xl sm:text-2xl font-black text-foreground">こんしゅうの チャレンジ</p>
+              <p className="text-xs font-bold text-muted-foreground">じっくり かんがえてみよう！</p>
+            </div>
+          </div>
+          <span className="clay-badge text-xs font-black bg-primary-soft text-primary-dark shrink-0">
+            🏆 週替わり難問
+          </span>
+        </header>
 
         {solving_p ? (
           <ThinkingSolver
@@ -55,12 +75,21 @@ function Challenge() {
           />
         ) : (
           <>
-            <section className="rounded-2xl bg-surface p-6 text-center">
-              <Trophy className="mx-auto size-14 text-primary" aria-hidden />
-              <p className="mt-2 text-lg font-bold">{DIFFICULTY_LABEL[current.difficulty]}・{current.typeTag}</p>
-              <p className="mt-3 text-2xl leading-relaxed font-bold">{current.question}</p>
-              <p className="mt-3 text-base text-muted-foreground">とけなくても だいじょうぶ。ちょうせんした ことが きろくに のこるよ。</p>
-              <button className="btn-kid btn-primary mt-6 w-full" onClick={() => setSolving(current.id)}>
+            <section className="clay-card p-6 sm:p-8 text-center relative overflow-hidden">
+              <div className="clay-tile-yellow size-16 mx-auto mb-3">
+                <Trophy className="size-9 text-white" aria-hidden />
+              </div>
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <span className="clay-badge text-xs font-black bg-primary-soft text-primary-dark">
+                  {current.typeTag}
+                </span>
+                <span className="clay-badge text-xs font-black bg-amber-100 text-amber-900 border border-amber-300/40">
+                  {DIFFICULTY_LABEL[current.difficulty]}
+                </span>
+              </div>
+              <p className="mt-4 text-2xl sm:text-3xl leading-relaxed font-black text-foreground">{current.question}</p>
+              <p className="mt-3 text-base text-muted-foreground font-bold">とけなくても だいじょうぶ。ちょうせんした ことが きろくに のこるよ。</p>
+              <button className="btn-kid btn-primary mt-6 w-full text-xl" onClick={() => setSolving(current.id)}>
                 {history.some((h) => h.problemId === current.id) ? "もういちど ちょうせん" : "ちょうせんする"}
               </button>
             </section>
