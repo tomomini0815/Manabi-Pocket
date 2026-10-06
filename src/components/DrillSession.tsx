@@ -106,10 +106,10 @@ export function DrillSession({ title, color, total, targetSec, stage, makeProble
   const dots = useMemo(() => Array.from({ length: total }), [total]);
 
   return (
-    <div className="min-h-dvh md:h-dvh md:max-h-dvh w-full bg-[#f5efe6] text-foreground flex flex-col justify-start px-3 pt-1.5 pb-3.5 sm:px-6 sm:pt-2 sm:pb-5 select-none overflow-y-auto md:overflow-hidden">
+    <div className="min-h-dvh w-full bg-[#f5efe6] text-foreground flex flex-col justify-start px-3 pt-2 pb-16 sm:px-6 sm:pt-3 sm:pb-20 select-none overflow-y-auto">
       {state === "correct" && <Confetti />}
 
-      <div className="mx-auto w-full max-w-3xl flex flex-col gap-2 sm:gap-2.5 mt-0.5 sm:mt-1 mb-auto">
+      <div className="mx-auto w-full max-w-2xl lg:max-w-3xl flex flex-col gap-2 sm:gap-2.5 mb-auto">
         {/* トップヘッダー（立体粘土バー ＆ ビーズプログレス） */}
         <header className="w-full shrink-0">
           <div className="flex items-center gap-2.5 sm:gap-3">
@@ -159,7 +159,7 @@ export function DrillSession({ title, color, total, targetSec, stage, makeProble
         {/* メイン問題カード（超立体アイボリー粘土スレート） */}
         <section
           key={index}
-          className="clay-card animate-slide-in flex flex-col justify-between p-3.5 sm:p-5 text-center w-full relative min-h-[140px] sm:min-h-[150px]"
+          className="clay-card animate-slide-in flex flex-col justify-between p-3.5 sm:p-5 text-center w-full relative min-h-[130px] sm:min-h-[145px]"
         >
           {/* カード上部：問題形式バッジ ＆ メモ機能トグル */}
           <div className="w-full flex items-center justify-between shrink-0 mb-1.5">
@@ -184,7 +184,7 @@ export function DrillSession({ title, color, total, targetSec, stage, makeProble
           {showMemo && (
             <div className="w-full my-1.5 p-2 clay-inset rounded-2xl bg-[#f7f2e9] shrink-0">
               <p className="text-[11px] font-bold text-muted-foreground mb-1 text-left">✍️ 画面に指やペンで自由に書けます</p>
-              <DrawCanvas height={110} />
+              <DrawCanvas height={140} templates />
             </div>
           )}
 
@@ -197,8 +197,8 @@ export function DrillSession({ title, color, total, targetSec, stage, makeProble
             </div>
           )}
 
-          {/* カード中央コンテンツ：視覚補助（漢字・図）＋ 問題文が自然な距離感で美しく調和 */}
-          <div className="flex flex-col items-center justify-center w-full gap-2 sm:gap-3 py-3 sm:py-5 my-auto">
+          {/* カード中央コンテンツ：視覚補助（漢字・図）＋ 問題文 */}
+          <div className="flex flex-col items-center justify-center w-full gap-2 sm:gap-3 py-2.5 sm:py-4 my-auto">
             {problem.visual && (
               <div className="text-4xl sm:text-5xl md:text-6xl font-black text-foreground tracking-wider select-none leading-none">
                 {problem.visual}
@@ -216,7 +216,7 @@ export function DrillSession({ title, color, total, targetSec, stage, makeProble
             {/* テンキー用入力プレビュー枠 */}
             {problem.input === "keypad" && (
               <div
-                className={`clay-inset min-h-12 sm:min-h-14 min-w-32 sm:min-w-36 px-6 text-3xl sm:text-4xl font-black flex items-center justify-center mt-2 ${
+                className={`clay-inset min-h-11 sm:min-h-13 min-w-30 sm:min-w-36 px-6 text-3xl sm:text-4xl font-black flex items-center justify-center mt-2 ${
                   state === "correct"
                     ? "animate-pop clay-tile-mint text-white"
                     : "text-foreground bg-[#ede5d8]"
@@ -252,91 +252,91 @@ export function DrillSession({ title, color, total, targetSec, stage, makeProble
 
         {/* 下部入力部（選択肢 / テンキー / 手書き） */}
         <footer className="w-full shrink-0">
-        {problem.input === "choice" && (
-          <div className="grid grid-cols-2 gap-2.5 sm:gap-3 w-full">
-            {problem.choices?.map((c, cIdx) => {
-              const isCorrectChoice = state === "correct" && c === problem.answer;
-              const isWrongChoice = c === wrongPick;
-              const choiceLabels = ["①", "②", "③", "④"];
+          {problem.input === "choice" && (
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-3 w-full">
+              {problem.choices?.map((c, cIdx) => {
+                const isCorrectChoice = state === "correct" && c === problem.answer;
+                const isWrongChoice = c === wrongPick;
+                const choiceLabels = ["①", "②", "③", "④"];
 
-              return (
-                <button
-                  key={c}
-                  type="button"
-                  disabled={state === "correct" || isWrongChoice}
-                  onClick={() => check(c)}
-                  className={`tap min-h-13 sm:min-h-14 md:min-h-15 px-3 sm:px-4 font-black transition-all flex items-center justify-between gap-2 relative ${
-                    isCorrectChoice
-                      ? "clay-card-mint scale-[1.02] ring-4 ring-correct shadow-[0_12px_24px_rgba(46,168,110,0.35)]"
-                      : isWrongChoice
-                      ? "clay-inset opacity-40 grayscale cursor-not-allowed"
-                      : "clay-card hover:scale-[1.01] active:scale-95 text-foreground"
-                  }`}
-                >
-                  <span className="clay-badge !size-7 shrink-0 text-xs font-black bg-muted/70 text-muted-foreground flex items-center justify-center !p-0">
-                    {choiceLabels[cIdx] ?? cIdx + 1}
-                  </span>
-                  <div className="flex-1 flex items-center justify-center">
-                    <MathFormula text={c} className="text-xl sm:text-2xl md:text-3xl" />
-                  </div>
+                return (
+                  <button
+                    key={c}
+                    type="button"
+                    disabled={state === "correct" || isWrongChoice}
+                    onClick={() => check(c)}
+                    className={`tap min-h-13 sm:min-h-14 md:min-h-15 px-3 sm:px-4 font-black transition-all flex items-center justify-between gap-2 relative ${
+                      isCorrectChoice
+                        ? "clay-card-mint scale-[1.02] ring-4 ring-correct shadow-[0_12px_24px_rgba(46,168,110,0.35)]"
+                        : isWrongChoice
+                        ? "clay-inset opacity-40 grayscale cursor-not-allowed"
+                        : "clay-card hover:scale-[1.01] active:scale-95 text-foreground"
+                    }`}
+                  >
+                    <span className="clay-badge !size-7 shrink-0 text-xs font-black bg-muted/70 text-muted-foreground flex items-center justify-center !p-0">
+                      {choiceLabels[cIdx] ?? cIdx + 1}
+                    </span>
+                    <div className="flex-1 flex items-center justify-center">
+                      <MathFormula text={c} className="text-xl sm:text-2xl md:text-3xl" />
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {problem.input === "keypad" && state !== "correct" && (
+            <div className="mx-auto w-full max-w-sm">
+              <Keypad value={value} onChange={setValue} onSubmit={() => check(value)} />
+            </div>
+          )}
+
+          {problem.input === "handwrite" && state !== "correct" && (
+            <div className="flex flex-col gap-2 max-w-md mx-auto">
+              <DrawCanvas key={index} height={180} />
+              {state !== "selfgrade" ? (
+                <button type="button" className="btn-kid btn-primary w-full py-2.5 text-base sm:text-lg" onClick={() => setState("selfgrade")}>
+                  かけた！ こたえを みる
                 </button>
-              );
-            })}
-          </div>
-        )}
-
-        {problem.input === "keypad" && state !== "correct" && (
-          <div className="mx-auto w-full max-w-sm">
-            <Keypad value={value} onChange={setValue} onSubmit={() => check(value)} />
-          </div>
-        )}
-
-        {problem.input === "handwrite" && state !== "correct" && (
-          <div className="flex flex-col gap-2 max-w-md mx-auto">
-            <DrawCanvas key={index} height={180} />
-            {state !== "selfgrade" ? (
-              <button type="button" className="btn-kid btn-primary w-full py-2.5 text-base sm:text-lg" onClick={() => setState("selfgrade")}>
-                かけた！ こたえを みる
-              </button>
-            ) : (
-              <div className="clay-card p-3 sm:p-4 text-center">
-                <p className="text-base sm:text-lg font-bold">おてほん：<span className="text-2xl sm:text-3xl font-black text-primary">{problem.answer}</span></p>
-                <div className="mt-3 grid grid-cols-2 gap-2.5">
-                  <button type="button" className="btn-kid btn-primary py-2 text-sm sm:text-base" onClick={() => { setState("correct"); playTone("correct"); setTimeout(() => finishOne(true), 900); }}>
-                    ◎ かけた
-                  </button>
-                  <button type="button" className="btn-kid btn-outline py-2 text-sm sm:text-base" onClick={() => finishOne(false)}>
-                    △ もうすこし
-                  </button>
+              ) : (
+                <div className="clay-card p-3 sm:p-4 text-center">
+                  <p className="text-base sm:text-lg font-bold">おてほん：<span className="text-2xl sm:text-3xl font-black text-primary">{problem.answer}</span></p>
+                  <div className="mt-3 grid grid-cols-2 gap-2.5">
+                    <button type="button" className="btn-kid btn-primary py-2 text-sm sm:text-base" onClick={() => { setState("correct"); playTone("correct"); setTimeout(() => finishOne(true), 900); }}>
+                      ◎ かけた
+                    </button>
+                    <button type="button" className="btn-kid btn-outline py-2 text-sm sm:text-base" onClick={() => finishOne(false)}>
+                      △ もうすこし
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
+            </div>
+          )}
+
+          {/* ヒント＆スキップ操作ボタン（メモボタンと同じ立体デザイン） */}
+          <div className="mt-2.5 flex items-center justify-between text-xs sm:text-sm">
+            {state !== "correct" && hint < 3 && problem.input !== "handwrite" ? (
+              <button
+                type="button"
+                className="tap clay-badge text-xs sm:text-sm font-black text-muted-foreground bg-surface hover:text-foreground hover:scale-105 active:scale-95"
+                onClick={() => { setMissed(true); setHint(hint + 1); }}
+              >
+                <Lightbulb className="size-4 text-amber-500" /> ヒント
+              </button>
+            ) : <span />}
+            {state === "reveal" && (
+              <button
+                type="button"
+                className="btn-kid btn-primary ml-auto min-h-9 sm:min-h-10 !py-1 px-5 text-xs sm:text-sm font-black"
+                onClick={() => finishOne(false)}
+              >
+                つぎへ
+              </button>
             )}
           </div>
-        )}
-
-        {/* ヒント＆スキップ操作ボタン */}
-        <div className="mt-1 sm:mt-1.5 flex items-center justify-between text-xs sm:text-sm">
-          {state !== "correct" && hint < 3 && problem.input !== "handwrite" ? (
-            <button
-              type="button"
-              className="tap clay-badge text-xs sm:text-sm font-black text-muted-foreground bg-surface hover:text-foreground hover:scale-105 active:scale-95"
-              onClick={() => { setMissed(true); setHint(hint + 1); }}
-            >
-              <Lightbulb className="size-4 text-amber-500" /> ヒント
-            </button>
-          ) : <span />}
-          {state === "reveal" && (
-            <button
-              type="button"
-              className="btn-kid btn-primary ml-auto min-h-9 sm:min-h-10 !py-1 px-5 text-xs sm:text-sm font-black"
-              onClick={() => finishOne(false)}
-            >
-              つぎへ
-            </button>
-          )}
-        </div>
-      </footer>
+        </footer>
+      </div>
     </div>
-  </div>
   );
 }
