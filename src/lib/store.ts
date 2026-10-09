@@ -53,6 +53,8 @@ type State = {
   attempts: ThinkAttempt[];
   paper: PaperRec[];
   sound: boolean;
+  lastSubjectId?: string | undefined;
+  lastGrade?: number | "all" | undefined;
   // not persisted
   hydrated: boolean;
   parentUnlocked: boolean;
@@ -68,6 +70,8 @@ type State = {
   deletePaper: (id: string) => void;
   setSound: (v: boolean) => void;
   setParentUnlocked: (v: boolean) => void;
+  setLastSubjectId: (id: string) => void;
+  setLastGrade: (g: number | "all" | undefined) => void;
 };
 
 export const useApp = create<State>()(
@@ -81,6 +85,8 @@ export const useApp = create<State>()(
       attempts: [],
       paper: [],
       sound: true,
+      lastSubjectId: "math",
+      lastGrade: undefined,
       hydrated: false,
       parentUnlocked: false,
 
@@ -141,6 +147,8 @@ export const useApp = create<State>()(
       deletePaper: (id) => set((s) => ({ paper: s.paper.filter((x) => x.id !== id) })),
       setSound: (v) => set({ sound: v }),
       setParentUnlocked: (v) => set({ parentUnlocked: v }),
+      setLastSubjectId: (id) => set({ lastSubjectId: id }),
+      setLastGrade: (g) => set({ lastGrade: g }),
     }),
     {
       name: "manabi-pocket-v1",
@@ -155,6 +163,8 @@ export const useApp = create<State>()(
         attempts: s.attempts,
         paper: s.paper,
         sound: s.sound,
+        lastSubjectId: s.lastSubjectId,
+        lastGrade: s.lastGrade,
       }),
       onRehydrateStorage: () => () => useApp.setState({ hydrated: true }),
     },

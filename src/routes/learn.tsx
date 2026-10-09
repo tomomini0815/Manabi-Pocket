@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Check, Lock, Sparkles, ChevronRight, Layers } from "lucide-react";
 import { KidShell, useRequireChild } from "@/components/KidShell";
 import {
@@ -15,7 +15,25 @@ import {
 import { isStepOpen } from "@/lib/selectors";
 import { useApp } from "@/lib/store";
 
+type LearnSearch = {
+  subject?: string | undefined;
+  grade?: number | "all" | undefined;
+};
+
 export const Route = createFileRoute("/learn")({
+  validateSearch: (search: Record<string, unknown>): LearnSearch => {
+    const rawSubject = typeof search["subject"] === "string" ? search["subject"] : undefined;
+    const rawGrade = search["grade"];
+    let parsedGrade: number | "all" | undefined = undefined;
+    if (rawGrade === "all") parsedGrade = "all";
+    else if (typeof rawGrade === "number" && !isNaN(rawGrade)) parsedGrade = clampGrade(rawGrade);
+    else if (typeof rawGrade === "string" && !isNaN(Number(rawGrade))) parsedGrade = clampGrade(Number(rawGrade));
+
+    return {
+      subject: rawSubject,
+      grade: parsedGrade,
+    };
+  },
   head: () => ({
     meta: [
       { title: "がくしゅう｜まなびポケット" },
@@ -29,11 +47,41 @@ export const Route = createFileRoute("/learn")({
 
 function Learn() {
   const child = useRequireChild();
+  const search = Route.useSearch();
   const progress = useApp((s) => s.progress);
-  const [sid, setSid] = useState(subjects[0]!.id);
+  const lastSubjectId = useApp((s) => s.lastSubjectId);
+  const setLastSubjectId = useApp((s) => s.setLastSubjectId);
+  const lastGrade = useApp((s) => s.lastGrade);
+  const setLastGrade = useApp((s) => s.setLastGrade);
+
+  const initialSubject = search.subject || lastSubjectId || subjects[0]!.id;
+  const [sid, setSid] = useState(initialSubject);
 
   const childGrade = clampGrade(child?.grade ?? 1);
-  const [selectedGrade, setSelectedGrade] = useState<number | "all">(childGrade);
+  const initialGrade = search.grade !== undefined ? search.grade : (lastGrade !== undefined ? lastGrade : childGrade);
+  const [selectedGrade, setSelectedGrade] = useState<number | "all">(initialGrade);
+
+  // Sync state if search params change
+  useEffect(() => {
+    if (search.subject && search.subject !== sid) {
+      setSid(search.subject);
+      setLastSubjectId(search.subject);
+    }
+    if (search.grade !== undefined && search.grade !== selectedGrade) {
+      setSelectedGrade(search.grade);
+      setLastGrade(search.grade);
+    }
+  }, [search.subject, search.grade]);
+
+  const handleSelectSubject = (id: string) => {
+    setSid(id);
+    setLastSubjectId(id);
+  };
+
+  const handleSelectGrade = (g: number | "all") => {
+    setSelectedGrade(g);
+    setLastGrade(g);
+  };
 
   if (!child) return null;
   const prog = progress[child.id] ?? {};
@@ -92,7 +140,7 @@ function Learn() {
               key={s.id}
               role="tab"
               aria-selected={active}
-              onClick={() => setSid(s.id)}
+              onClick={() => handleSelectSubject(s.id)}
               className={`tap relative flex flex-col items-center justify-center p-3 text-center transition-all ${cardClass}`}
             >
               <span className="text-2xl sm:text-3xl mt-0.5">{s.icon}</span>
@@ -111,7 +159,7 @@ function Learn() {
           {selectedGrade !== childGrade && (
             <button
               type="button"
-              onClick={() => setSelectedGrade(childGrade)}
+              onClick={() => handleSelectGrade(childGrade)}
               className="text-xs font-black text-primary hover:underline inline-flex items-center gap-1"
             >
               <Sparkles className="size-3.5" />
@@ -131,7 +179,7 @@ function Learn() {
               <button
                 key={g}
                 type="button"
-                onClick={() => setSelectedGrade(g)}
+                onClick={() => handleSelectGrade(g)}
                 className={`tap relative w-full !rounded-2xl pt-3.5 pb-2 px-1 text-center transition-all flex flex-col items-center justify-center cursor-pointer select-none ${
                   isSelected
                     ? "clay-tab-active z-10"

@@ -92,9 +92,9 @@ function Review() {
   const currentItem = items[thinkIndex] ?? items[0]!;
   const found = findStep(currentItem.levelId, currentItem.stepId);
   const isThinking =
-    found?.step.generator === "thinking" ||
-    found?.subject.id === "thinking" ||
-    currentItem.levelId.startsWith("think");
+    found?.step.generator === "thinking" &&
+    typeof found?.step.params?.["problemId"] === "string" &&
+    !!found.step.params["problemId"];
 
   // 思考力問題の場合：ThinkingSolver で個別に出題
   if (isThinking) {

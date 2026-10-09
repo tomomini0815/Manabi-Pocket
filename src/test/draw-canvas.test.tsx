@@ -85,6 +85,42 @@ describe("DrawCanvas", () => {
     expect(screen.getByTitle("ドラッグして広げる")).toBeInTheDocument();
   });
 
+  it("adds a number line (すうせん) shape and allows increasing and decreasing cells (マス)", () => {
+    render(<DrawCanvas templates={true} />);
+
+    // メニューを開いて「すうせん（数直線）」を追加
+    fireEvent.click(screen.getByRole("button", { name: /学習図形を追加する/ }));
+    fireEvent.click(screen.getByText("すうせん（数直線）"));
+
+    // 選択ツールバーとマス増減ボタンが表示されること
+    expect(screen.getByText("いどう")).toBeInTheDocument();
+    expect(screen.getByTitle("マス（目盛り）をふやす")).toBeInTheDocument();
+    expect(screen.getByTitle("マス（目盛り）をへらす")).toBeInTheDocument();
+    expect(screen.getByText("5マス")).toBeInTheDocument();
+
+    // マスを増やす (5 -> 6)
+    fireEvent.click(screen.getByTitle("マス（目盛り）をふやす"));
+    expect(screen.getByText("6マス")).toBeInTheDocument();
+
+    // マスを減らす (6 -> 5)
+    fireEvent.click(screen.getByTitle("マス（目盛り）をへらす"));
+    expect(screen.getByText("5マス")).toBeInTheDocument();
+  });
+
+  it("adds a grid (マス目) shape and allows modifying columns and rows", () => {
+    render(<DrawCanvas templates={true} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /学習図形を追加する/ }));
+    fireEvent.click(screen.getByText("マス目（筆算）"));
+
+    expect(screen.getByText("いどう")).toBeInTheDocument();
+    expect(screen.getByTitle("列をふやす")).toBeInTheDocument();
+    expect(screen.getByTitle("行をふやす")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTitle("列をふやす"));
+    fireEvent.click(screen.getByTitle("行をふやす"));
+  });
+
   it("clears all canvas and shapes when clicking clear all", () => {
     render(<DrawCanvas templates={true} />);
 

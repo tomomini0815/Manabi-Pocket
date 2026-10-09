@@ -63,6 +63,21 @@ function DrillInner({ levelId, stepId }: { levelId: string; stepId: string }) {
     return null;
   })();
 
+  const setLastSubjectId = useApp((s) => s.setLastSubjectId);
+  const setLastGrade = useApp((s) => s.setLastGrade);
+
+  const exitToLearn = () => {
+    setLastSubjectId(subject.id);
+    setLastGrade(level.startGrade);
+    navigate({
+      to: "/learn",
+      search: {
+        subject: subject.id,
+        grade: level.startGrade,
+      },
+    });
+  };
+
   if (result) {
     return (
       <ResultView
@@ -77,9 +92,9 @@ function DrillInner({ levelId, stepId }: { levelId: string; stepId: string }) {
     );
   }
 
-  // 思考力ステップの場合：ThinkingSolver（ひらめきノート、段階ヒント、ふりかえり）を出題
-  if (step.generator === "thinking" || subject.id === "thinking") {
-    const pId = typeof step.params?.["problemId"] === "string" ? (step.params["problemId"] as string) : "";
+  // 思考力ステップ（thinking-problems.json の問題IDがある場合のみ ThinkingSolver を使用）
+  if (step.generator === "thinking" && typeof step.params?.["problemId"] === "string" && step.params["problemId"]) {
+    const pId = step.params["problemId"] as string;
     const thinkProb = findThinking(pId) || paramProblem(newSeed());
 
     const handleThinkDone = (o: ThinkOutcome) => {
@@ -120,7 +135,7 @@ function DrillInner({ levelId, stepId }: { levelId: string; stepId: string }) {
               <button
                 type="button"
                 className="tap clay-tile-white size-10 sm:size-11 !rounded-2xl transition-transform hover:scale-105 active:scale-95 shrink-0"
-                onClick={() => navigate({ to: "/learn" })}
+                onClick={exitToLearn}
                 aria-label="やめる"
               >
                 <X className="size-5 sm:size-6 text-muted-foreground" />
@@ -152,7 +167,7 @@ function DrillInner({ levelId, stepId }: { levelId: string; stepId: string }) {
       targetSec={step.targetSec}
       stage={stage}
       makeProblem={(_i, delta, usedKeys) => generate(step.generator, step.params, newSeed(), delta, usedKeys)}
-      onQuit={() => navigate({ to: "/learn" })}
+      onQuit={exitToLearn}
       onFinish={(r) => {
         const passed = r.correct / r.total >= 0.9 && r.durationSec <= step.targetSec;
         const brk = needBreakNow(sessions, child.id, r.durationSec);

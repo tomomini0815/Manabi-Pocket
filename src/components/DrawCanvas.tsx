@@ -71,6 +71,60 @@ export function DrawCanvas({
   // 図形追加ドロップダウンの開閉
   const [isShapeMenuOpen, setIsShapeMenuOpen] = useState(false);
   const shapeMenuRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const [menuCoords, setMenuCoords] = useState<{
+    top: number;
+    left: number;
+    width: number;
+  } | null>(null);
+
+  // ポップオーバー位置の動的計算（画面端からのはみ出しを確実に防止）
+  const updateMenuCoords = useCallback(() => {
+    if (!shapeMenuRef.current) return;
+    const rect = shapeMenuRef.current.getBoundingClientRect();
+    const screenW = typeof window !== "undefined" ? window.innerWidth : 360;
+    const menuWidth = Math.min(270, Math.max(220, screenW - 24));
+
+    // ボタン中央揃えを基準としつつ、画面左右端12px以内に収める
+    let left = rect.left + rect.width / 2 - menuWidth / 2;
+    if (left < 12) left = 12;
+    if (left + menuWidth > screenW - 12) {
+      left = Math.max(12, screenW - menuWidth - 12);
+    }
+
+    const screenH = typeof window !== "undefined" ? window.innerHeight : 600;
+    const estimatedMenuHeight = 250;
+    let top = rect.bottom + 6;
+    if (top + estimatedMenuHeight > screenH - 12 && rect.top > estimatedMenuHeight + 12) {
+      top = rect.top - estimatedMenuHeight - 6;
+    }
+
+    setMenuCoords({
+      top: Math.round(top),
+      left: Math.round(left),
+      width: Math.round(menuWidth),
+    });
+  }, []);
+
+  const toggleShapeMenu = () => {
+    if (!isShapeMenuOpen) {
+      updateMenuCoords();
+      setIsShapeMenuOpen(true);
+    } else {
+      setIsShapeMenuOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!isShapeMenuOpen) return;
+    updateMenuCoords();
+    window.addEventListener("resize", updateMenuCoords);
+    window.addEventListener("scroll", updateMenuCoords, true);
+    return () => {
+      window.removeEventListener("resize", updateMenuCoords);
+      window.removeEventListener("scroll", updateMenuCoords, true);
+    };
+  }, [isShapeMenuOpen, updateMenuCoords]);
 
   // ドラッグ操作（移動・リサイズ）の状態
   const dragRef = useRef<{
@@ -133,10 +187,12 @@ export function DrawCanvas({
   // ポップオーバー外クリック検知
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent | TouchEvent) => {
+      if (!isShapeMenuOpen) return;
+      const target = e.target as Node;
       if (
-        isShapeMenuOpen &&
         shapeMenuRef.current &&
-        !shapeMenuRef.current.contains(e.target as Node)
+        !shapeMenuRef.current.contains(target) &&
+        (!menuRef.current || !menuRef.current.contains(target))
       ) {
         setIsShapeMenuOpen(false);
       }
@@ -461,7 +517,7 @@ export function DrawCanvas({
                     ? "clay-tile-peach text-white shadow-xs scale-105"
                     : "clay-badge bg-surface text-foreground hover:scale-105 active:scale-95"
                 }`}
-                onClick={() => setIsShapeMenuOpen(!isShapeMenuOpen)}
+                onClick={toggleShapeMenu}
                 aria-expanded={isShapeMenuOpen}
                 aria-label="学習図形を追加する"
                 title="表や線分図などの学習図形を追加"
@@ -475,10 +531,26 @@ export function DrawCanvas({
                 />
               </button>
 
-              {/* 図形選択ドロップダウンメニュー */}
+              {/* 図形選択ドロップダウンメニュー（画面端からのはみ出しを確実に防止） */}
               {isShapeMenuOpen && (
                 <div
-                  className="absolute left-0 top-full mt-2 w-64 sm:w-72 p-2.5 rounded-2xl bg-surface/98 border-2 border-primary/20 shadow-xl backdrop-blur-md z-50 animate-in fade-in zoom-in-95 duration-150 max-w-[calc(100vw-48px)]"
+                  ref={menuRef}
+                  style={
+                    menuCoords
+                      ? {
+                          position: "fixed",
+                          top: `${menuCoords.top}px`,
+                          left: `${menuCoords.left}px`,
+                          width: `${menuCoords.width}px`,
+                        }
+                      : {
+                          position: "fixed",
+                          top: "60px",
+                          left: "12px",
+                          width: "270px",
+                        }
+                  }
+                  className="fixed z-50 p-2.5 rounded-2xl bg-surface/98 border-2 border-primary/20 shadow-2xl backdrop-blur-md animate-in fade-in zoom-in-95 duration-150 max-w-[calc(100vw-24px)]"
                   role="menu"
                 >
                   <div className="flex items-center justify-between pb-1.5 mb-1.5 border-b border-border/60">
@@ -488,7 +560,7 @@ export function DrawCanvas({
                     <button
                       type="button"
                       onClick={() => setIsShapeMenuOpen(false)}
-                      className="text-muted-foreground hover:text-foreground p-0.5 rounded-lg"
+                      className="text-muted-foreground hover:text-foreground p-0.5 rounded-lg cursor-pointer"
                     >
                       <X className="size-3.5" />
                     </button>
@@ -499,7 +571,7 @@ export function DrawCanvas({
                     <button
                       type="button"
                       onClick={() => addShape("table")}
-                      className="flex items-center gap-2 p-2 rounded-xl text-left bg-muted/40 hover:bg-primary-soft hover:text-primary transition-all text-xs font-black border border-transparent hover:border-primary/20"
+                      className="flex items-center gap-2 p-2 rounded-xl text-left bg-muted/40 hover:bg-primary-soft hover:text-primary transition-all text-xs font-black border border-transparent hover:border-primary/20 cursor-pointer"
                     >
                       <Table2 className="size-4 text-secondary shrink-0" />
                       <div>
@@ -512,7 +584,7 @@ export function DrawCanvas({
                     <button
                       type="button"
                       onClick={() => addShape("line")}
-                      className="flex items-center gap-2 p-2 rounded-xl text-left bg-muted/40 hover:bg-primary-soft hover:text-primary transition-all text-xs font-black border border-transparent hover:border-primary/20"
+                      className="flex items-center gap-2 p-2 rounded-xl text-left bg-muted/40 hover:bg-primary-soft hover:text-primary transition-all text-xs font-black border border-transparent hover:border-primary/20 cursor-pointer"
                     >
                       <Minus className="size-4 text-secondary shrink-0 stroke-[3]" />
                       <div>
@@ -525,7 +597,7 @@ export function DrawCanvas({
                     <button
                       type="button"
                       onClick={() => addShape("numberline")}
-                      className="flex items-center gap-2 p-2 rounded-xl text-left bg-muted/40 hover:bg-primary-soft hover:text-primary transition-all text-xs font-black border border-transparent hover:border-primary/20"
+                      className="flex items-center gap-2 p-2 rounded-xl text-left bg-muted/40 hover:bg-primary-soft hover:text-primary transition-all text-xs font-black border border-transparent hover:border-primary/20 cursor-pointer"
                     >
                       <ArrowRight className="size-4 text-secondary shrink-0" />
                       <div>
@@ -538,7 +610,7 @@ export function DrawCanvas({
                     <button
                       type="button"
                       onClick={() => addShape("grid")}
-                      className="flex items-center gap-2 p-2 rounded-xl text-left bg-muted/40 hover:bg-primary-soft hover:text-primary transition-all text-xs font-black border border-transparent hover:border-primary/20"
+                      className="flex items-center gap-2 p-2 rounded-xl text-left bg-muted/40 hover:bg-primary-soft hover:text-primary transition-all text-xs font-black border border-transparent hover:border-primary/20 cursor-pointer"
                     >
                       <Grid3X3 className="size-4 text-secondary shrink-0" />
                       <div>
@@ -551,7 +623,7 @@ export function DrawCanvas({
                     <button
                       type="button"
                       onClick={() => addShape("box")}
-                      className="flex items-center gap-2 p-2 rounded-xl text-left bg-muted/40 hover:bg-primary-soft hover:text-primary transition-all text-xs font-black border border-transparent hover:border-primary/20"
+                      className="flex items-center gap-2 p-2 rounded-xl text-left bg-muted/40 hover:bg-primary-soft hover:text-primary transition-all text-xs font-black border border-transparent hover:border-primary/20 cursor-pointer"
                     >
                       <Square className="size-4 text-secondary shrink-0" />
                       <div>
@@ -564,7 +636,7 @@ export function DrawCanvas({
                     <button
                       type="button"
                       onClick={() => addShape("circle")}
-                      className="flex items-center gap-2 p-2 rounded-xl text-left bg-muted/40 hover:bg-primary-soft hover:text-primary transition-all text-xs font-black border border-transparent hover:border-primary/20"
+                      className="flex items-center gap-2 p-2 rounded-xl text-left bg-muted/40 hover:bg-primary-soft hover:text-primary transition-all text-xs font-black border border-transparent hover:border-primary/20 cursor-pointer"
                     >
                       <Circle className="size-4 text-secondary shrink-0" />
                       <div>
@@ -577,7 +649,7 @@ export function DrawCanvas({
                     <button
                       type="button"
                       onClick={() => addShape("triangle")}
-                      className="flex items-center gap-2 p-2 rounded-xl text-left bg-muted/40 hover:bg-primary-soft hover:text-primary transition-all text-xs font-black border border-transparent hover:border-primary/20 col-span-2"
+                      className="flex items-center gap-2 p-2 rounded-xl text-left bg-muted/40 hover:bg-primary-soft hover:text-primary transition-all text-xs font-black border border-transparent hover:border-primary/20 col-span-2 cursor-pointer"
                     >
                       <Triangle className="size-4 text-secondary shrink-0" />
                       <div>
@@ -714,31 +786,34 @@ export function DrawCanvas({
                     </div>
                   )}
 
-                  {s.type === "numberline" && (
-                    <div className="w-full h-full flex flex-col justify-center relative">
-                      {/* 横軸 */}
-                      <div className="w-full h-[3px] bg-[#74a48f] relative">
-                        {/* 矢印 */}
-                        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-0 h-0 border-y-[6px] border-y-transparent border-l-[10px] border-l-[#74a48f]" />
+                  {s.type === "numberline" && (() => {
+                    const sub = s.subdivisions || 5;
+                    return (
+                      <div className="w-full h-full flex flex-col justify-center relative select-none">
+                        {/* 横軸 */}
+                        <div className="w-full h-[3px] bg-[#74a48f] relative">
+                          {/* 矢印 */}
+                          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-0 h-0 border-y-[6px] border-y-transparent border-l-[10px] border-l-[#74a48f]" />
+                        </div>
+                        {/* 目盛り（矢印の手前まで均等に配置） */}
+                        <div className="absolute left-1 right-3.5 top-1/2 -translate-y-1/2 flex justify-between">
+                          {Array.from({ length: sub + 1 }).map((_, idx) => (
+                            <div
+                              key={idx}
+                              className={`bg-[#74a48f] ${
+                                idx === 0 || idx === sub
+                                  ? "w-[2.5px] h-4.5 -mt-2.5"
+                                  : "w-[1.5px] h-3 -mt-1.5"
+                              }`}
+                            />
+                          ))}
+                        </div>
+                        <span className="absolute left-1 bottom-0 text-[10px] font-black text-[#74a48f]">
+                          0
+                        </span>
                       </div>
-                      {/* 目盛り */}
-                      <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-1">
-                        {Array.from({ length: (s.subdivisions || 5) + 1 }).map((_, idx) => (
-                          <div
-                            key={idx}
-                            className={`bg-[#74a48f] ${
-                              idx === 0 || idx === s.subdivisions
-                                ? "w-[2.5px] h-4.5 -mt-2.5"
-                                : "w-[1.5px] h-3 -mt-1.5"
-                            }`}
-                          />
-                        ))}
-                      </div>
-                      <span className="absolute left-0 bottom-0 text-[10px] font-black text-[#74a48f]">
-                        0
-                      </span>
-                    </div>
-                  )}
+                    );
+                  })()}
 
                   {s.type === "grid" && (
                     <div
@@ -797,7 +872,9 @@ export function DrawCanvas({
                 {/* 選択時の上部ドラッグ移動バー ＆ ツールバー */}
                 {isSelected && (
                   <div
-                    className="absolute -top-9 left-0 flex items-center gap-1 bg-surface/95 px-2 py-1 rounded-xl shadow-md border border-primary/30 z-30 pointer-events-auto"
+                    className={`absolute ${
+                      s.y < 42 ? "top-full mt-2" : "-top-9"
+                    } left-0 flex items-center gap-1 bg-surface/95 px-2 py-1 rounded-xl shadow-md border border-primary/30 z-30 pointer-events-auto max-w-[calc(100vw-32px)] overflow-x-auto`}
                     onPointerDown={(e) => startDrag(e, s, "move")}
                     onPointerMove={onDragPointerMove}
                     onPointerUp={endDrag}
@@ -807,14 +884,14 @@ export function DrawCanvas({
                       <span>いどう</span>
                     </div>
 
-                    <div className="h-3 w-px bg-border/60 mx-1" />
+                    <div className="h-3 w-px bg-border/60 mx-1 shrink-0" />
 
                     {/* 表：列・行の増減ボタン */}
                     {s.type === "table" && (
-                      <div className="flex items-center gap-0.5">
+                      <div className="flex items-center gap-0.5 shrink-0">
                         <button
                           type="button"
-                          className="px-1.5 py-0.5 bg-muted/60 hover:bg-muted text-[10px] font-black rounded"
+                          className="px-1.5 py-0.5 bg-muted/60 hover:bg-muted active:scale-95 text-[10px] font-black rounded cursor-pointer"
                           onClick={(e) => {
                             e.stopPropagation();
                             updateShape(s.id, { cols: Math.min(8, (s.cols || 3) + 1) });
@@ -825,7 +902,7 @@ export function DrawCanvas({
                         </button>
                         <button
                           type="button"
-                          className="px-1.5 py-0.5 bg-muted/60 hover:bg-muted text-[10px] font-black rounded"
+                          className="px-1.5 py-0.5 bg-muted/60 hover:bg-muted active:scale-95 text-[10px] font-black rounded cursor-pointer"
                           onClick={(e) => {
                             e.stopPropagation();
                             updateShape(s.id, { cols: Math.max(1, (s.cols || 3) - 1) });
@@ -836,7 +913,7 @@ export function DrawCanvas({
                         </button>
                         <button
                           type="button"
-                          className="px-1.5 py-0.5 bg-muted/60 hover:bg-muted text-[10px] font-black rounded"
+                          className="px-1.5 py-0.5 bg-muted/60 hover:bg-muted active:scale-95 text-[10px] font-black rounded cursor-pointer"
                           onClick={(e) => {
                             e.stopPropagation();
                             updateShape(s.id, { rows: Math.min(8, (s.rows || 3) + 1) });
@@ -847,7 +924,7 @@ export function DrawCanvas({
                         </button>
                         <button
                           type="button"
-                          className="px-1.5 py-0.5 bg-muted/60 hover:bg-muted text-[10px] font-black rounded"
+                          className="px-1.5 py-0.5 bg-muted/60 hover:bg-muted active:scale-95 text-[10px] font-black rounded cursor-pointer"
                           onClick={(e) => {
                             e.stopPropagation();
                             updateShape(s.id, { rows: Math.max(1, (s.rows || 3) - 1) });
@@ -861,10 +938,10 @@ export function DrawCanvas({
 
                     {/* 線分図：分割数の増減ボタン */}
                     {s.type === "line" && (
-                      <div className="flex items-center gap-0.5">
+                      <div className="flex items-center gap-0.5 shrink-0">
                         <button
                           type="button"
-                          className="px-1.5 py-0.5 bg-muted/60 hover:bg-muted text-[10px] font-black rounded"
+                          className="px-1.5 py-0.5 bg-muted/60 hover:bg-muted active:scale-95 text-[10px] font-black rounded cursor-pointer"
                           onClick={(e) => {
                             e.stopPropagation();
                             updateShape(s.id, { divisions: Math.min(10, (s.divisions || 4) + 1) });
@@ -875,7 +952,7 @@ export function DrawCanvas({
                         </button>
                         <button
                           type="button"
-                          className="px-1.5 py-0.5 bg-muted/60 hover:bg-muted text-[10px] font-black rounded"
+                          className="px-1.5 py-0.5 bg-muted/60 hover:bg-muted active:scale-95 text-[10px] font-black rounded cursor-pointer"
                           onClick={(e) => {
                             e.stopPropagation();
                             updateShape(s.id, { divisions: Math.max(1, (s.divisions || 4) - 1) });
@@ -883,6 +960,103 @@ export function DrawCanvas({
                           title="区切りをへらす"
                         >
                           -区切り
+                        </button>
+                      </div>
+                    )}
+
+                    {/* 数直線：マス（目盛り）の増減ボタン */}
+                    {s.type === "numberline" && (
+                      <div className="flex items-center gap-1 shrink-0">
+                        <div className="flex items-center gap-0.5">
+                          <button
+                            type="button"
+                            className="px-1.5 py-0.5 bg-muted/60 hover:bg-muted active:scale-95 text-[10px] font-black rounded cursor-pointer"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              updateShape(s.id, {
+                                subdivisions: Math.min(20, (s.subdivisions || 5) + 1),
+                              });
+                            }}
+                            title="マス（目盛り）をふやす"
+                            aria-label="数直線のマスを増やす"
+                          >
+                            +マス
+                          </button>
+                          <button
+                            type="button"
+                            className="px-1.5 py-0.5 bg-muted/60 hover:bg-muted active:scale-95 text-[10px] font-black rounded cursor-pointer"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              updateShape(s.id, {
+                                subdivisions: Math.max(1, (s.subdivisions || 5) - 1),
+                              });
+                            }}
+                            title="マス（目盛り）をへらす"
+                            aria-label="数直線のマスを減らす"
+                          >
+                            -マス
+                          </button>
+                        </div>
+                        <span className="text-[10px] font-bold text-muted-foreground whitespace-nowrap px-0.5">
+                          {s.subdivisions || 5}マス
+                        </span>
+                      </div>
+                    )}
+
+                    {/* マス目：列・行の増減ボタン */}
+                    {s.type === "grid" && (
+                      <div className="flex items-center gap-0.5 shrink-0">
+                        <button
+                          type="button"
+                          className="px-1.5 py-0.5 bg-muted/60 hover:bg-muted active:scale-95 text-[10px] font-black rounded cursor-pointer"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            updateShape(s.id, {
+                              gridCols: Math.min(10, (s.gridCols || 4) + 1),
+                            });
+                          }}
+                          title="列をふやす"
+                        >
+                          +列
+                        </button>
+                        <button
+                          type="button"
+                          className="px-1.5 py-0.5 bg-muted/60 hover:bg-muted active:scale-95 text-[10px] font-black rounded cursor-pointer"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            updateShape(s.id, {
+                              gridCols: Math.max(1, (s.gridCols || 4) - 1),
+                            });
+                          }}
+                          title="列をへらす"
+                        >
+                          -列
+                        </button>
+                        <button
+                          type="button"
+                          className="px-1.5 py-0.5 bg-muted/60 hover:bg-muted active:scale-95 text-[10px] font-black rounded cursor-pointer"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            updateShape(s.id, {
+                              gridRows: Math.min(10, (s.gridRows || 4) + 1),
+                            });
+                          }}
+                          title="行をふやす"
+                        >
+                          +行
+                        </button>
+                        <button
+                          type="button"
+                          className="px-1.5 py-0.5 bg-muted/60 hover:bg-muted active:scale-95 text-[10px] font-black rounded cursor-pointer"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            updateShape(s.id, {
+                              gridRows: Math.max(1, (s.gridRows || 4) - 1),
+                            });
+                          }}
+                          title="行をへらす"
+                        >
+                          -行
                         </button>
                       </div>
                     )}

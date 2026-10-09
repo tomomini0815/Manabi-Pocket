@@ -82,12 +82,47 @@
           { "id": "s03", "title": "長方形と正方形の面積", "generator": "geometry", "params": { "kind": "rectArea" }, "targetSec": 180 },
           { "id": "s04", "title": "異分母分数のたし算", "generator": "fracAdvanced", "params": { "mode": "addDiff" }, "targetSec": 180 }
         ]},
+        { "id": "math-dec-adv", "name": "小数の かけ算・わり算（小学5年）", "startGrade": 5, "steps": [
+          { "id": "s01", "title": "小数×小数の 計算", "generator": "decimalMulDiv", "params": { "mode": "decDec" }, "targetSec": 180 },
+          { "id": "s02", "title": "小数÷整数の 計算", "generator": "decimalMulDiv", "params": { "op": "div" }, "targetSec": 180 },
+          { "id": "s03", "title": "平均の 計算", "generator": "average", "params": {}, "targetSec": 180 },
+          { "id": "s04", "title": "単位量あたりの 大きさ（混み具合）", "generator": "average", "params": { "mode": "unitPer" }, "targetSec": 180 }
+        ]},
+        { "id": "math-area-vol", "name": "面積と体積（小学5年）", "startGrade": 5, "steps": [
+          { "id": "s01", "title": "平行四辺形の 面積", "generator": "geometryAdv", "params": { "kind": "parallelogram" }, "targetSec": 180 },
+          { "id": "s02", "title": "三角形の 面積", "generator": "geometry", "params": { "kind": "triangleArea" }, "targetSec": 180 },
+          { "id": "s03", "title": "台形の 面積", "generator": "geometryAdv", "params": { "kind": "trapezoid" }, "targetSec": 180 },
+          { "id": "s04", "title": "ひし形の 面積", "generator": "geometryAdv", "params": { "kind": "rhombus" }, "targetSec": 180 },
+          { "id": "s05", "title": "直方体・立方体の 体積", "generator": "geometry", "params": { "kind": "cubeVolume" }, "targetSec": 180 }
+        ]},
         { "id": "math-k7", "name": "算数検定7級（小学5年）", "startGrade": 5, "steps": [
           { "id": "s01", "title": "小数のかけ算（小数×小数）", "generator": "decimalMulDiv", "params": { "mode": "decDec" }, "targetSec": 180 },
           { "id": "s02", "title": "分数の通分とひき算", "generator": "fracAdvanced", "params": { "mode": "subDiff" }, "targetSec": 180 },
           { "id": "s03", "title": "約分と既約分数", "generator": "fracAdvanced", "params": { "mode": "simplify" }, "targetSec": 150 },
           { "id": "s04", "title": "直方体と立方体の体積", "generator": "geometry", "params": { "kind": "cubeVolume" }, "targetSec": 180 },
           { "id": "s05", "title": "割合と百分率（％・割）", "generator": "percent", "params": {}, "targetSec": 180 }
+        ]},
+        { "id": "math-frac-adv", "name": "分数の かけ算・わり算（小学6年）", "startGrade": 6, "steps": [
+          { "id": "s01", "title": "分数の かけ算", "generator": "fracAdvanced", "params": { "mode": "mul" }, "targetSec": 180 },
+          { "id": "s02", "title": "分数の わり算（逆数）", "generator": "fracAdvanced", "params": { "mode": "div" }, "targetSec": 180 },
+          { "id": "s03", "title": "約分マスター", "generator": "fracAdvanced", "params": { "mode": "simplify" }, "targetSec": 150 },
+          { "id": "s04", "title": "異分母分数の 計算まとめ", "generator": "fracAdvanced", "params": { "mode": "addDiff" }, "targetSec": 180 }
+        ]},
+        { "id": "math-data-ratio", "name": "比例・反比例と比・場合の数（小学6年）", "startGrade": 6, "steps": [
+          { "id": "s01", "title": "比と 比の値", "generator": "ratio", "params": {}, "targetSec": 150 },
+          { "id": "s02", "title": "比例と 反比例", "generator": "propTable", "params": {}, "targetSec": 180 },
+          { "id": "s03", "title": "速さ・道のり・時間", "generator": "speed", "params": {}, "targetSec": 180 },
+          { "id": "s04", "title": "円の 面積（3.14）", "generator": "geometry", "params": { "kind": "circleArea" }, "targetSec": 180 },
+          { "id": "s05", "title": "角柱・円柱の 体積", "generator": "geometryAdv", "params": { "kind": "prism" }, "targetSec": 180 },
+          { "id": "s06", "title": "場合の数（並べ方・組み合わせ）", "generator": "combCount", "params": {}, "targetSec": 180 }
+        ]},
+        { "id": "math-kaisei", "name": "開成・最難関中突破 算数特訓（小学6年）", "startGrade": 6, "steps": [
+          { "id": "s01", "title": "数の性質・N進法・約数とあまりの周期", "generator": "kaiseiNumber", "params": {}, "targetSec": 300 },
+          { "id": "s02", "title": "平面図形・相似の連鎖と面積比", "generator": "kaiseiPlaneGeometry", "params": {}, "targetSec": 300 },
+          { "id": "s03", "title": "立体図形・立方体の切断と水深変化", "generator": "kaiseiSolidGeometry", "params": {}, "targetSec": 300 },
+          { "id": "s04", "title": "速さと比・流水算と往復旅人算", "generator": "kaiseiSpeed", "params": {}, "targetSec": 300 },
+          { "id": "s05", "title": "ニュートン算・仕事算の難問", "generator": "kaiseiWork", "params": {}, "targetSec": 300 },
+          { "id": "s06", "title": "場合の数・規則性とカードのシャッフル", "generator": "kaiseiCombinatorics", "params": {}, "targetSec": 300 }
         ]},
         { "id": "math-k6", "name": "算数検定6級（小学6年・修了）", "startGrade": 6, "steps": [
           { "id": "s01", "title": "分数のかけ算とわり算", "generator": "fracAdvanced", "params": { "mode": "mul" }, "targetSec": 180 },
@@ -121,10 +156,33 @@
           { "id": "s01", "title": "1年の かんじ", "generator": "kanji", "params": { "set": 1 }, "targetSec": 150 },
           { "id": "s02", "title": "2年の かんじ", "generator": "kanji", "params": { "set": 2 }, "targetSec": 150 },
           { "id": "s03", "title": "3年の かんじ", "generator": "kanji", "params": { "set": 3 }, "targetSec": 180 },
-          { "id": "s04", "title": "4年の かんじ", "generator": "kanji", "params": { "set": 4 }, "targetSec": 180 }
+          { "id": "s04", "title": "4年の かんじ", "generator": "kanji", "params": { "set": 4 }, "targetSec": 180 },
+          { "id": "s05", "title": "5年の かんじ", "generator": "kanji", "params": { "set": 5 }, "targetSec": 180 },
+          { "id": "s06", "title": "6年の かんじ", "generator": "kanji", "params": { "set": 6 }, "targetSec": 180 }
         ]},
         { "id": "ja-read", "name": "みじかい ぶんしょう（どっかい）", "startGrade": 2, "steps": [
           { "id": "s01", "title": "よんで こたえよう（たんぶん読解）", "generator": "reading", "params": {}, "targetSec": 300 }
+        ]},
+        { "id": "ja-vocab-adv", "name": "ことばの きまり・語彙（小学3〜4年）", "startGrade": 3, "steps": [
+          { "id": "s01", "title": "ことわざ・慣用句（きそ）", "generator": "idiom", "params": {}, "targetSec": 180 },
+          { "id": "s02", "title": "同音異義語・同訓異字", "generator": "homophone", "params": {}, "targetSec": 180 },
+          { "id": "s03", "title": "つなぎ言葉（接続詞）", "generator": "conjunction", "params": {}, "targetSec": 180 },
+          { "id": "s04", "title": "主語と 述語の見分け", "generator": "syugo", "params": {}, "targetSec": 180 }
+        ]},
+        { "id": "ja-read-adv", "name": "論理的読解・文章問題（小学5年）", "startGrade": 5, "steps": [
+          { "id": "s01", "title": "説明文・指示語の読解", "generator": "readingAdv", "params": { "type": "explain" }, "targetSec": 300 },
+          { "id": "s02", "title": "物語文・気持ちの読み取り", "generator": "readingAdv", "params": { "type": "story" }, "targetSec": 300 },
+          { "id": "s03", "title": "慣用句・ことわざの応用", "generator": "idiom", "params": {}, "targetSec": 180 }
+        ]},
+        { "id": "ja-keigo", "name": "敬語・表現・四字熟語（小学6年）", "startGrade": 6, "steps": [
+          { "id": "s01", "title": "敬語の使い分け（尊敬語・謙譲語・丁寧語）", "generator": "keigo", "params": {}, "targetSec": 180 },
+          { "id": "s02", "title": "四字熟語・故事成語", "generator": "yojijukugo", "params": {}, "targetSec": 180 },
+          { "id": "s03", "title": "6年の 総合読解", "generator": "readingAdv", "params": { "type": "comprehensive" }, "targetSec": 300 }
+        ]},
+        { "id": "ja-kaisei", "name": "開成・最難関中突破 国語語彙・読解特訓（小学6年）", "startGrade": 6, "steps": [
+          { "id": "s01", "title": "開成頻出・最難関語彙・心情表現", "generator": "kaiseiVocab", "params": {}, "targetSec": 240 },
+          { "id": "s02", "title": "故事成語・歴史的教訓と教養", "generator": "kaiseiSeigo", "params": {}, "targetSec": 240 },
+          { "id": "s03", "title": "開成レベル・心情と主題の論理的読解", "generator": "kaiseiReading", "params": {}, "targetSec": 360 }
         ]}
       ]
     },
@@ -144,6 +202,21 @@
         { "id": "en-sentence", "name": "かんたんな 会話と文", "startGrade": 3, "steps": [
           { "id": "s01", "title": "えいごで あいさつ", "generator": "engGreeting", "params": {}, "targetSec": 150 },
           { "id": "s02", "title": "I like / I have", "generator": "engSentence", "params": {}, "targetSec": 180 }
+        ]},
+        { "id": "en-daily", "name": "毎日の英語・身近な表現（小学4年）", "startGrade": 4, "steps": [
+          { "id": "s01", "title": "曜日・月・季節・時間", "generator": "engTimeCalendar", "params": {}, "targetSec": 150 },
+          { "id": "s02", "title": "家族・体の部分・気持ち", "generator": "engFamilyBody", "params": {}, "targetSec": 150 },
+          { "id": "s03", "title": "身近な単語と色・数", "generator": "engColorsNumbers", "params": {}, "targetSec": 150 }
+        ]},
+        { "id": "en-questions", "name": "質問と答え・Can/Do（小学5年）", "startGrade": 5, "steps": [
+          { "id": "s01", "title": "疑問詞の質問（What/Where/When/Who/How）", "generator": "engWhQuestions", "params": {}, "targetSec": 180 },
+          { "id": "s02", "title": "Can you 〜? / Do you 〜?", "generator": "engCanDo", "params": {}, "targetSec": 180 },
+          { "id": "s03", "title": "学校の教科・施設・身近な職業", "generator": "engSchoolJobs", "params": {}, "targetSec": 180 }
+        ]},
+        { "id": "en-conversation", "name": "自己紹介・日常会話・表現（小学6年）", "startGrade": 6, "steps": [
+          { "id": "s01", "title": "過去形・思い出・将来の夢", "generator": "engPastFuture", "params": {}, "targetSec": 180 },
+          { "id": "s02", "title": "実用英会話（道案内・買い物・レストラン）", "generator": "engDialogues", "params": {}, "targetSec": 180 },
+          { "id": "s03", "title": "英文の語順ならびかえ", "generator": "engWordOrder", "params": {}, "targetSec": 180 }
         ]}
       ]
     },
@@ -228,6 +301,14 @@
             { "id": "s05", "title": "立方体の3面塗り小立方体", "generator": "thinking", "params": { "problemId": "t-lab6-cube-paint3" }, "targetSec": 480 },
             { "id": "s06", "title": "累乗の一の位の周期性", "generator": "thinking", "params": { "problemId": "t-lab6-cycle-power" }, "targetSec": 480 },
             { "id": "s07", "title": "仕切り板によるリンゴの分配", "generator": "thinking", "params": { "problemId": "t-lab6-partitions" }, "targetSec": 480 }
+          ]
+        },
+        {
+          "id": "think-kaisei",
+          "name": "思考力特級（開成・最難関中突破 思考パズル）",
+          "startGrade": 6,
+          "steps": [
+            { "id": "s01", "title": "開成・論理推理パズル（天秤・魔方陣・不変量）", "generator": "kaiseiThinking", "params": {}, "targetSec": 500 }
           ]
         },
         {

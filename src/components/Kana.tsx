@@ -1,6 +1,7 @@
 import React from "react";
 import { useActiveChild, type RubyMode } from "@/lib/store";
 import rawDictionary from "@/data/furigana-dictionary.json";
+import rawSingleKanji from "@/data/kanji-single-map.json";
 
 /**
  * ルール形式:
@@ -11,6 +12,8 @@ type RuleTuple = [string, string, string, string?, string?];
 const KANJI_RULES: RuleTuple[] = (rawDictionary as RuleTuple[]).sort(
   (a, b) => b[0].length - a[0].length || a[0].localeCompare(b[0], "ja")
 );
+
+const SINGLE_KANJI: Record<string, string> = rawSingleKanji as Record<string, string>;
 
 // 最長一致検索用の正規表現を事前コンパイル
 const DICT_REGEX = new RegExp(
@@ -23,6 +26,50 @@ for (const r of KANJI_RULES) {
   if (!RULE_MAP.has(r[0])) {
     RULE_MAP.set(r[0], r);
   }
+}
+
+/** 辞書マッチから漏れたプレーンテキスト内の漢字を1文字フォールバック辞書で救済 */
+function renderPlainTextWithFallback(plain: string, mode: RubyMode, keyPrefix: string): React.ReactNode {
+  if (!plain) return null;
+  if (!/[\u4e00-\u9faf]/.test(plain)) {
+    return plain;
+  }
+
+  const parts: React.ReactNode[] = [];
+  let buffer = "";
+
+  for (let i = 0; i < plain.length; i++) {
+    const char = plain[i]!;
+    if (/[\u4e00-\u9faf]/.test(char)) {
+      if (buffer) {
+        parts.push(buffer);
+        buffer = "";
+      }
+      const reading = SINGLE_KANJI[char];
+      if (reading) {
+        if (mode === "hira") {
+          parts.push(reading);
+        } else {
+          parts.push(
+            <ruby key={`${keyPrefix}-fb-${i}`} className="select-text">
+              {char}
+              <rt className="select-none text-[0.55em] text-primary-dark font-bold leading-none">{reading}</rt>
+            </ruby>
+          );
+        }
+      } else {
+        parts.push(char);
+      }
+    } else {
+      buffer += char;
+    }
+  }
+
+  if (buffer) {
+    parts.push(buffer);
+  }
+
+  return <React.Fragment key={`${keyPrefix}-plain`}>{parts}</React.Fragment>;
 }
 
 /**
@@ -45,7 +92,7 @@ export function parseFurigana(text: string, mode: RubyMode): React.ReactNode {
   while ((match = DICT_REGEX.exec(text)) !== null) {
     // マッチ前のプレーンテキスト
     if (match.index > lastIndex) {
-      nodes.push(text.slice(lastIndex, match.index));
+      nodes.push(renderPlainTextWithFallback(text.slice(lastIndex, match.index), mode, `${lastIndex}`));
     }
 
     if (match[1]) {
@@ -92,7 +139,7 @@ export function parseFurigana(text: string, mode: RubyMode): React.ReactNode {
 
   // 残りのテキスト
   if (lastIndex < text.length) {
-    nodes.push(text.slice(lastIndex));
+    nodes.push(renderPlainTextWithFallback(text.slice(lastIndex), mode, `tail-${lastIndex}`));
   }
 
   return <>{nodes}</>;
