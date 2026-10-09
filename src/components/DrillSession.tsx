@@ -230,7 +230,7 @@ export function DrillSession({ title, color, total, targetSec, stage, makeProble
         </section>
 
         {/* フィードバック・ヒント通知バナー */}
-        <div className="shrink-0 min-h-8 sm:min-h-9" aria-live="polite">
+        <div className="shrink-0 min-h-8 sm:min-h-9 w-full" aria-live="polite">
           {state === "correct" && (
             <div className="clay-card-mint flex items-center justify-center gap-2 p-1.5 sm:p-2 text-base sm:text-lg font-black text-[#1e4537] animate-pop">
               <Pocket stage={stage} size={34} happy />
@@ -238,13 +238,15 @@ export function DrillSession({ title, color, total, targetSec, stage, makeProble
             </div>
           )}
           {(state === "retry" || state === "reveal") && (
-            <div className="clay-card-peach p-1.5 sm:p-2 text-xs sm:text-sm text-[#592518]">
+            <div className="clay-card-peach p-2 sm:p-2.5 text-xs sm:text-sm text-[#592518] whitespace-normal break-words">
               <p className="font-black text-xs sm:text-sm text-[#b54523]">△ おしい！ もういちど かんがえてみよう</p>
-              <p className="mt-0.5 truncate font-bold">💡 <RubyText text={problem.hints[hint - 1]} /></p>
+              <div className="mt-1 font-bold leading-relaxed break-words whitespace-normal text-foreground">
+                💡 <RubyText text={problem.hints[hint - 1]} />
+              </div>
             </div>
           )}
           {state === "ask" && hint > 0 && (
-            <div className="clay-card p-1.5 sm:p-2 text-xs sm:text-sm text-foreground font-bold truncate">
+            <div className="clay-card p-2 sm:p-2.5 text-xs sm:text-sm text-foreground font-bold leading-relaxed break-words whitespace-normal">
               💡 <RubyText text={problem.hints[hint - 1]} />
             </div>
           )}

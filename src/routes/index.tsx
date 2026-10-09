@@ -40,15 +40,15 @@ function Home() {
   return (
     <KidShell
       header={
-        <div className="clay-card !rounded-2xl !py-1 sm:!py-1.5 !px-3 sm:!px-4 flex flex-col justify-center bg-gradient-to-r from-[#fffaf7] via-white to-[#fff4ee] border-2 border-white shadow-[0_4px_14px_rgba(234,99,64,0.08)]">
-          <span className="text-xs sm:text-sm font-black text-foreground/75 tracking-tight leading-tight">
+        <div className="clay-card !rounded-2xl !py-1 sm:!py-1.5 !px-3 sm:!px-4 w-fit mr-auto flex flex-col sm:flex-row sm:items-baseline sm:gap-2 items-start justify-center text-left bg-gradient-to-r from-[#fffaf7] via-white to-[#fff4ee] border-2 border-white shadow-[0_4px_14px_rgba(234,99,64,0.08)]">
+          <span className="text-xs sm:text-base font-black text-foreground/75 tracking-tight leading-tight shrink-0">
             こんにちは、
           </span>
-          <div className="flex items-baseline gap-1 leading-tight">
-            <span className="text-base sm:text-xl font-black text-primary-dark tracking-tight truncate max-w-[130px] sm:max-w-none">
+          <div className="flex items-baseline gap-1 leading-tight min-w-0">
+            <span className="text-lg sm:text-2xl font-black text-primary-dark tracking-tight truncate max-w-[150px] sm:max-w-none">
               {child.nickname}
             </span>
-            <span className="text-xs sm:text-sm font-extrabold text-[#9c5938]">
+            <span className="text-xs sm:text-base font-extrabold text-[#9c5938] shrink-0">
               さん
             </span>
           </div>

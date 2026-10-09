@@ -697,15 +697,6 @@ export function ThinkingSolver({ problem, onDone }: { problem: ThinkProblem; onD
                   <span className="text-xs font-bold text-muted-foreground hidden sm:inline whitespace-nowrap">
                     図や計算を自由に書こう
                   </span>
-                  <button
-                    type="button"
-                    className="tap clay-badge text-[11px] sm:text-xs font-black bg-surface text-foreground hover:scale-105 active:scale-95 whitespace-nowrap cursor-pointer"
-                    onClick={() => setMemoHeight((h) => Math.min(850, h + 80))}
-                    title="メモ欄を下へ広げる"
-                  >
-                    <Plus className="size-3 sm:size-3.5" />
-                    <span>広げる</span>
-                  </button>
                   {memoHeight > 220 && (
                     <button
                       type="button"
@@ -717,6 +708,15 @@ export function ThinkingSolver({ problem, onDone }: { problem: ThinkProblem; onD
                       <span>もどす</span>
                     </button>
                   )}
+                  <button
+                    type="button"
+                    className="tap clay-badge text-[11px] sm:text-xs font-black bg-surface text-foreground hover:scale-105 active:scale-95 whitespace-nowrap cursor-pointer"
+                    onClick={() => setMemoHeight((h) => Math.min(850, h + 80))}
+                    title="メモ欄を下へ広げる"
+                  >
+                    <Plus className="size-3 sm:size-3.5" />
+                    <span>広げる</span>
+                  </button>
                 </div>
               </div>
 
@@ -780,20 +780,20 @@ export function ThinkingSolver({ problem, onDone }: { problem: ThinkProblem; onD
                   </div>
                 )}
 
-                {/* ヒント表示（現在開いているもの） */}
+                {/* ヒント表示（現在開いているもの：スクロールさせず全表示・省略なし） */}
                 {hint > 0 && (
-                  <div className="space-y-1.5 lg:space-y-2 pt-1 max-h-48 lg:max-h-none overflow-y-auto lg:overflow-visible pr-1">
+                  <div className="space-y-1.5 lg:space-y-2 pt-1">
                     {problem.hints.slice(0, hint).map((h, i) => (
                       <div
                         key={i}
-                        className="clay-card p-2.5 lg:p-3 text-xs sm:text-sm font-bold"
+                        className="clay-card p-2.5 lg:p-3 text-xs sm:text-sm font-bold animate-in fade-in slide-in-from-top-1 duration-200 whitespace-normal break-words"
                       >
                         <span className="clay-badge text-[10px] font-black bg-primary-soft text-primary-dark mb-0.5 lg:mb-1">
                           {HINT_TITLE[i + 1]}
                         </span>
-                        <p className="mt-0.5 lg:mt-1 text-foreground leading-relaxed">
+                        <div className="mt-0.5 lg:mt-1 text-foreground leading-relaxed whitespace-normal break-words">
                           <RubyText text={h} />
-                        </p>
+                        </div>
                       </div>
                     ))}
                   </div>

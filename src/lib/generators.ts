@@ -40,7 +40,8 @@ function shuffle<T>(r: Rand, arr: T[]): T[] {
   return a;
 }
 function choices(r: Rand, answer: string, pool: string[], n = 4): string[] {
-  const others = shuffle(r, pool.filter((p) => p !== answer)).slice(0, n - 1);
+  const uniquePool = Array.from(new Set(pool)).filter((p) => p !== answer);
+  const others = shuffle(r, uniquePool).slice(0, n - 1);
   return shuffle(r, [answer, ...others]);
 }
 const num = (p: Params, k: string, d: number) => (typeof p[k] === "number" ? (p[k] as number) : d);
@@ -61,7 +62,7 @@ type GenOut = {
 };
 type Gen = (p: Params, r: Rand, delta: number) => GenOut;
 
-const gens: Record<string, Gen> = {
+export const gens: Record<string, Gen> = {
   // 数の認識・カウント
   count(p, r, d) {
     const n = int(r, num(p, "min", 1), Math.min(20, num(p, "max", 5) + d));
@@ -233,7 +234,14 @@ const gens: Record<string, Gen> = {
       const a = int(r, 2, den - 1);
       const b = int(r, 1, a - 1);
       const ans = `${a - b}/${den}`;
-      const pool = [`${a + b}/${den}`, `${Math.max(1, a - b + 1)}/${den}`, `${a - b}/${den * 2}`];
+      const pool = [
+        `${a + b}/${den}`,
+        `${Math.max(1, a - b + 1)}/${den}`,
+        `${Math.max(1, a - b - 1)}/${den}`,
+        `${a - b}/${den * 2}`,
+        `${a}/${den}`,
+        `${b}/${den}`,
+      ];
       return {
         prompt: `${a}/${den} − ${b}/${den} = ?`,
         answer: ans,
@@ -245,7 +253,14 @@ const gens: Record<string, Gen> = {
     const a = int(r, 1, den - 2);
     const b = int(r, 1, den - 1 - a);
     const ans = `${a + b}/${den}`;
-    const pool = [`${a + b}/${den * 2}`, `${a + b + 1}/${den}`, `${Math.max(1, a + b - 1)}/${den}`, `${a * b}/${den}`, `${a + b}/${den + 1}`];
+    const pool = [
+      `${a + b}/${den * 2}`,
+      `${a + b + 1}/${den}`,
+      `${Math.max(1, a + b - 1)}/${den}`,
+      `${Math.max(1, Math.abs(a - b))}/${den}`,
+      `${a + b}/${den + 1}`,
+      `${a}/${den}`,
+    ];
     return {
       prompt: `${a}/${den} + ${b}/${den} = ?`,
       answer: ans,
@@ -1411,12 +1426,12 @@ const gens: Record<string, Gen> = {
       { q: "「じっけんが [成功|せいこう]する」の 正しい漢字は？", a: "成功", c: ["成功", "製工", "性向", "精巧"] },
       { q: "「[関心|かんしん]を もつ」の 正しい漢字は？", a: "関心", c: ["関心", "感心", "歓心", "観心"] },
       { q: "「りっぱな たいどに [感心|かんしん]する」の 正しい漢字は？", a: "感心", c: ["感心", "関心", "歓心", "寒心"] },
-      { q: "「じけんを [調査|ちょうさ]する」の 正しい漢字は？", a: "調査", c: ["調査", "調査", "長査", "超査"] },
+      { q: "「じけんを [調査|ちょうさ]する」の 正しい漢字は？", a: "調査", c: ["調査", "帳査", "長査", "超査"] },
       { q: "「[創造|そうぞう]りょくを はっきする」の 正しい漢字は？", a: "創造", c: ["創造", "想像", "装造", "相造"] },
       { q: "「ゆめを [想像|そうぞう]する」の 正しい漢字は？", a: "想像", c: ["想像", "創造", "肖像", "相像"] },
       { q: "「[完全|かんぜん]に なおる」の 正しい漢字は？", a: "完全", c: ["完全", "完前", "観全", "官全"] },
       { q: "「[健康|けんこう]な からだ」の 正しい漢字は？", a: "健康", c: ["健康", "健幸", "検康", "見康"] },
-      { q: "「[発表|はっぴょう]の [準備|じゅんび]」の 正しい漢字は？", a: "準備", c: ["準備", "準美", "順備", "準備"] },
+      { q: "「[発表|はっぴょう]の [準備|じゅんび]」の 正しい漢字は？", a: "準備", c: ["準備", "準美", "順備", "巡備"] },
     ];
     const it = pick(r, items);
     return {

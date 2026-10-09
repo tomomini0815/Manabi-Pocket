@@ -17,7 +17,7 @@ export function Keypad({ value, onChange, onSubmit, disabled }: { value: string;
       <button type="button" className={btn} onClick={() => press("0")} disabled={disabled}>0</button>
       <button
         type="button"
-        className="btn-kid btn-primary h-10 sm:h-11 md:h-11 min-h-0 px-2 text-sm sm:text-base font-black shadow-md cursor-pointer select-none"
+        className="tap h-10 sm:h-11 md:h-11 rounded-[20px] border-2 border-white/90 bg-gradient-to-b from-[#ff9233] to-[#ff6b00] text-white shadow-[0_8px_16px_-2px_rgba(255,107,0,0.35),inset_0_3px_4px_rgba(255,255,255,0.8),inset_0_-3.5px_5px_rgba(180,55,0,0.3)] transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-40 flex items-center justify-center cursor-pointer select-none text-xs sm:text-sm md:text-sm font-black"
         onClick={onSubmit}
         disabled={disabled || !value}
       >
